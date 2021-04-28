@@ -66,3 +66,7 @@ chmod 777 install.sh
 ./install.sh
 python3 01-camera_test.py
 ```
+
+You should see the following output if the program has run smoothly:
+
+![camera prog output](img/camera_prog_output.jpg)
