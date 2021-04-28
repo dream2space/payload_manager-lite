@@ -56,7 +56,7 @@ After Rebooting the Raspberry Pi, run the test program to ensure that the camera
 
 Open up the terminal by clicking the Terminal icon or pressing `Ctrl+Alt+T`
 
-Enter the following commands:
+Enter the following commands in order after each command has been completed:
 
 ```bash
 cd Desktop
