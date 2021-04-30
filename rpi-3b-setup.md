@@ -121,12 +121,6 @@ Once entered into the GUI, enter the default username and password.
 
 Source: [here](https://www.raspberrypi.org/documentation/configuration/uart.md) and [here](https://www.circuits.dk/setup-raspberry-pi-3-gpio-uart/)
 
-Refer to Zoom video recorded. Transcribe it later.
-
-[Video 1](https://youtu.be/Wx_LtSRWkB4)
-
-[Video 2](https://youtu.be/2LdOYL3mz5s)
-
 Open up the terminal and issue the following command.
 
 ```bash
