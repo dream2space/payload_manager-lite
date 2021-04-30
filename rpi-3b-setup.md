@@ -1,18 +1,42 @@
 # Raspberry Pi 3B+ Setup
 
-This documentation describes the setup for the Raspberry Pi off the package.
+This documentation describes the setup for the Raspberry Pi off the package for the Payload.
+
+## Overview and Payload Architecture
+
+...
 
 ## Step 1: Install Raspbian OS
 
-Follow the instructions to install Raspbian OS.
+Download the Raspberry Pi Imager from the website [here](https://www.raspberrypi.org/software/).
+
+Install the Raspberry Pi Imager and launch the Application once installed. The application looks like this.
+
+![Raspberry Pi imager](images/rpiimager.png)
+
+Click `Choose OS` and select the recommended first option, `Raspberry Pi OS (32-bit)`.
+
+![Choose OS](images/choose_os.png)  
+
+Insert the MicroSD card into the PC and click `Choose Storage` to flash the OS onto under the `Storage` tab.
+
+Select the storage volume to flash the OS onto.
+
+![Choose storage](images/CHOOSE_STORAGE.png)  
+
+Wait for the flashing to complete.
 
 ## Step 2: Set up the SD Card to enable SSH
 
+Remove and insert the SD card into the PC again.
+
+Enter the `boot` drive that the PC detects.
+
 Create an empty file name `ssh` in `boot`.
 
-[Video 1](https://youtu.be/Wx_LtSRWkB4)
+This is done by going through the right click menu and creating a file as such.
 
-[Video 2](https://youtu.be/2LdOYL3mz5s)
+![picture 5](images/ssh_file.png)  
 
 ## Step 3: Set up the Laptop and Ethernet connection to the Raspberry Pi
 
@@ -47,5 +71,9 @@ Setting up the serial consolde in Raspberry Pi.
 Source: [here](https://www.raspberrypi.org/documentation/configuration/uart.md) and [here](https://www.circuits.dk/setup-raspberry-pi-3-gpio-uart/)
 
 Refer to Zoom video recorded. Transcribe it later.
+
+[Video 1](https://youtu.be/Wx_LtSRWkB4)
+
+[Video 2](https://youtu.be/2LdOYL3mz5s)
 
 Add `core_freq=250` to `/boot/config.txt`
