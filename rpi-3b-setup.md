@@ -127,4 +127,49 @@ Refer to Zoom video recorded. Transcribe it later.
 
 [Video 2](https://youtu.be/2LdOYL3mz5s)
 
-Add `core_freq=250` to `/boot/config.txt`
+Open up the terminal and issue the following command.
+
+```bash
+dmesg | grep tty
+```
+
+The following screen should be observed, with the `PL011` connected to the `ttyAMA01`.
+
+![ttyAMA01](images/AMA01.png)  
+
+Issue the `sudo raspi-config` command and navigate to the `Interface Options` and then to `Serial Port`, the press enter.
+
+![Serial Port](images/Serialport.png)  
+
+When prompted about the login shell over console, select No.
+
+![Login Shell over Console](images/loginshellconsole.png)  
+
+When prompted about enabling hardware serial, select Yes.
+
+![Hardware Serial](images/hardwareserial.png)  
+
+Exit the configuration page and reboot.
+
+Once the reboot is successful, issue the following command into the terminal.
+
+```bash
+sudo nano /boot/config.txt
+```
+
+Add these 2 lines to the end of the file if they are not already there.
+
+```bash
+enable_uart=1
+core_freq=250
+```
+
+![Config file](images/bootconfig.png)  
+
+Press `Ctrl+X`, `Y` and enter to save and exit the file.
+
+Proceed to reboot the Raspberry Pi for changes to take effect.
+
+### Step 9: Test if UART configurations are successful
+
+Short the TX and RX pins and launch minicom.
