@@ -40,7 +40,7 @@ This is done by going through the right click menu and creating a file as such.
 
 ## Step 3: Set up the Laptop and Ethernet connection to the Raspberry Pi
 
-If using Ethernet via USB.
+(*If using Ethernet via USB to access the Raspberry Pi, else using the Monitor or Wifi is possible as well*)
 
 Go to the Laptop's Network Connection and set the Ethernet to obtain IP addresses automatically.
 
@@ -52,9 +52,7 @@ Share the Laptop's WiFi to the Raspberry Pi.
 
 ## Step 4: Boot up the Raspberry Pi
 
-Boot up the Raspberry Pi and wait until you see the start up screen as such:
-
-![startup](startup.jpg)
+Boot up the Raspberry Pi and wait for a few minutes until the Yellow LED remains stable for around 5 minutes.
 
 ## Step 5: SSH into the Raspberry Pi
 
@@ -62,11 +60,64 @@ Open Putty and key the IP address into the terminal as shown below.
 
 ![putty](https://www.diyhobi.com/wp-content/uploads/2016/12/putty-raspberrypi-local.png)
 
-Use `sudo raspi-config` to start VNC.
+Once successful, the login screen will appear. Login with the default account credentials:
 
-### Step 6: Set up UART
+```bash
+username: pi
+password: raspberry
+```
 
-Setting up the serial consolde in Raspberry Pi.
+![SSH login](images/ssh_login.png)  
+
+Use `sudo raspi-config` to enter the configuration screen to start VNC.
+
+Navigate to the Interface options and press enter.
+
+![Raspi Config](images/raspiconfig.png)  
+
+Navigate to the VNC option and press enter.
+
+![VNC](images/VNC.png)  
+
+Select yes to enable VNC.
+
+![VNC2](images/VNC2.png)
+
+Leave the configuration page by selecting Finish.
+
+![Finish Raspi](images/finishraspi.png)  
+
+When prompted to reboot, selected yes and wait for 5 minutes until the Yellow LED stabilizes after 5 minutes.
+
+### Step 6: Enable Camera interface
+
+Use `sudo raspi-config` to enter the configuration screen to enable the camera interface.
+
+Similar to the previous step, navigate to the Interface options and press enter.
+
+Select Camera option and press enter.
+
+![Camera interface](images/camerainterface.png)  
+
+Select yes and press enter.
+
+![Camera Interface 2](images/Camerainterface2.png)  
+
+Similarly, leave the configuration page by selecting finish.
+
+When prompted to reboot, selected yes and wait for 5 minutes until the Yellow LED stabilizes after 5 minutes.
+
+### Step 7: Use VNC
+
+Use VNC to view the GUI desktop of the Raspberry Pi.
+
+Enter `raspberrypi.local` into the top bar to connect to the Raspberry Pi via VNC.
+
+![VNC Login](images/vnc_login.png)  
+
+Once entered into the GUI, enter the default username and password.
+
+### Step 8: Set up UART
 
 Source: [here](https://www.raspberrypi.org/documentation/configuration/uart.md) and [here](https://www.circuits.dk/setup-raspberry-pi-3-gpio-uart/)
 
