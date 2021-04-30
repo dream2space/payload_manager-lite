@@ -4,6 +4,34 @@ This repo contains code for the Payload Manager for educational Cubesats.
 
 ## Raspberry Pi Setup
 
+### SSH Setup
+
+Flash the Raspbian OS.
+
+In the `boot` partition, create an empty text file named `ssh`. 
+
+Boot the Raspberry Pi.
+
+### VNC Setup
+
+SSH into the Raspberry Pi after boot up.
+
+Type the command: `sudo raspi-config`
+
+Enable the VNC server.
+
+Reboot the Raspberry Pi for changes to take effect. 
+
+### Serial Console
+
+Setting up the serial consolde in Raspberry Pi.
+
+Source: [here](https://www.raspberrypi.org/documentation/configuration/uart.md) and [here](https://www.circuits.dk/setup-raspberry-pi-3-gpio-uart/)
+
+Refer to Zoom video recorded. Transcribe it later.
+
+Add `core_freq=250` to `/boot/config.txt`
+
 ## Payload Manager Architecture
 
 ## List of Programs
