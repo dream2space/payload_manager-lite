@@ -10,7 +10,9 @@ Follow the instructions to install Raspbian OS.
 
 Create an empty file name `ssh` in `boot`.
 
+[Video 1](https://youtu.be/Wx_LtSRWkB4)
 
+[Video 2](https://youtu.be/2LdOYL3mz5s)
 
 ## Step 3: Set up the Laptop and Ethernet connection to the Raspberry Pi
 
