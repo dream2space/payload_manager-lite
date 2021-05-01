@@ -51,7 +51,7 @@ class CCSDS_Start_Packet(CCSDS_Packet):
         super().__init__(packet_seq_num, packet_data)
 
     def __str__(self):
-        return f"{self.header}|{self.packet_data}"
+        return f"start|seqnum:{self.packet_seq_num}|len:{len(self.get_tx_packet())}"
 
     def get_tx_packet(self):
         return self.header + self.packet_data
@@ -78,7 +78,7 @@ class CCSDS_Chunk_Packet(CCSDS_Packet):
         super().__init__(packet_seq_num, packet_data)
 
     def __str__(self):
-        return f"{self.header}|{self.packet_data}"
+        return f"chunk|seqnum:{self.packet_seq_num}|len:{len(self.get_tx_packet())}"
 
     def get_tx_packet(self):
         return self.header + self.packet_data
