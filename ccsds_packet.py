@@ -69,6 +69,39 @@ class CCSDS_Start_Packet(CCSDS_Packet):
         return data
 
 
+class CCSDS_Chunk_Packet(CCSDS_Packet):
+
+    def __init__(self, packet_seq_num, telemetry_packet_type, current_batch_num, current_chunk_num, chunk):
+        self.chunk = chunk
+        packet_data = self._create_chunk_packet_data(
+            telemetry_packet_type, current_batch_num, current_chunk_num, chunk)
+        super().__init__(packet_seq_num, packet_data)
+
+    def __str__(self):
+        return f"{self.header}|{self.packet_data}"
+
+    def get_tx_packet(self):
+        return self.header + self.packet_data
+
+    def _create_chunk_packet_data(self, telemetry_packet_type, current_batch_num, current_chunk_num, chunk):
+        TELEMETRY_TYPE_LENGTH = 1
+        CURRENT_CHUNKS_LENGTH = 3  # bytes
+        CURRENT_BATCH_LENGTH = 3
+
+        data = bytearray(0)
+        data = telemetry_packet_type.to_bytes(TELEMETRY_TYPE_LENGTH, 'big')
+        data = data + current_batch_num.to_bytes(CURRENT_BATCH_LENGTH, 'big')
+        data = data + current_chunk_num.to_bytes(CURRENT_CHUNKS_LENGTH, 'big')
+
+        rsc = RSCodec(16)  # 16 ecc symbols
+        data += rsc.encode(self.chunk)
+
+        return data
+
+
 if __name__ == "__main__":
-    print(CCSDS_Start_Packet(1, 11, 200, 120))
-    print(CCSDS_Start_Packet(1, 11, 200, 120).get_tx_packet())
+    # print(CCSDS_Start_Packet(1, 11, 200, 120))
+    # print(CCSDS_Start_Packet(1, 11, 200, 120).get_tx_packet())
+
+    # print(CCSDS_Chunk_Packet(1, 11, 200, 120, b"hello"))
+    print(CCSDS_Chunk_Packet(1, 11, 200, 120, b"hello").get_tx_packet())
