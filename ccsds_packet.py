@@ -43,4 +43,31 @@ class CCSDS_Packet:
         return temp_header
 
 
-print(CCSDS_Packet(1, b"hello"))
+class CCSDS_Start_Packet(CCSDS_Packet):
+
+    def __init__(self, packet_seq_num, telemetry_packet_type, total_bytes, total_batch):
+        packet_data = self._create_start_packet_data(
+            telemetry_packet_type, total_bytes, total_batch)
+        super().__init__(packet_seq_num, packet_data)
+
+    def __str__(self):
+        return f"{self.header}|{self.packet_data}"
+
+    def get_tx_packet(self):
+        return self.header + self.packet_data
+
+    def _create_start_packet_data(self, telemetry_packet_type, total_bytes, total_batch):
+        TELEMETRY_TYPE_LENGTH = 1  # bytes
+        TOTAL_BYTES_LENGTH = 3
+        TOTAL_BATCH_LENGTH = 3
+
+        data = bytearray(0)
+        data = telemetry_packet_type.to_bytes(TELEMETRY_TYPE_LENGTH, 'big')
+        data = data + total_bytes.to_bytes(TOTAL_BYTES_LENGTH, 'big')
+        data = data + total_batch.to_bytes(TOTAL_BATCH_LENGTH, 'big')
+
+        return data
+
+
+print(CCSDS_Start_Packet(1, 11, 200, 120))
+print(CCSDS_Start_Packet(1, 11, 200, 120).get_tx_packet())
