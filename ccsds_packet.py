@@ -69,5 +69,6 @@ class CCSDS_Start_Packet(CCSDS_Packet):
         return data
 
 
-print(CCSDS_Start_Packet(1, 11, 200, 120))
-print(CCSDS_Start_Packet(1, 11, 200, 120).get_tx_packet())
+if __name__ == "__main__":
+    print(CCSDS_Start_Packet(1, 11, 200, 120))
+    print(CCSDS_Start_Packet(1, 11, 200, 120).get_tx_packet())
