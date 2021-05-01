@@ -1,5 +1,5 @@
 from apscheduler.schedulers.background import BackgroundScheduler
-from ccsds_packet import CCSDS_Chunk_Packet, CCSDS_Start_Packet
+from ccsds_packet import CCSDS_Chunk_Packet, CCSDS_Control_Packet
 from picamera import PiCamera
 import serial
 import sys
