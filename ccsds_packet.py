@@ -43,7 +43,7 @@ class CCSDS_Packet:
         return temp_header
 
 
-class CCSDS_Start_Packet(CCSDS_Packet):
+class CCSDS_Control_Packet(CCSDS_Packet):
 
     def __init__(self, packet_seq_num, telemetry_packet_type, total_bytes, total_batch):
         packet_data = self._create_start_packet_data(
@@ -54,7 +54,7 @@ class CCSDS_Start_Packet(CCSDS_Packet):
         return f"start|seqnum:{self.packet_seq_num}|len:{len(self.get_tx_packet())}"
 
     def get_tx_packet(self):
-        return self.header + self.packet_data
+        return self._pad_tx_packet(self.header + self.packet_data)
 
     def _create_start_packet_data(self, telemetry_packet_type, total_bytes, total_batch):
         TELEMETRY_TYPE_LENGTH = 1  # bytes
@@ -67,6 +67,15 @@ class CCSDS_Start_Packet(CCSDS_Packet):
         data = data + total_batch.to_bytes(TOTAL_BATCH_LENGTH, 'big')
 
         return data
+
+    def _pad_tx_packet(self, prepad):
+        TOTAL_PACKET_LENGTH = 149
+        HEADER_LENGTH = 6
+        TELEMETRY_TYPE_LENGTH = 1  # bytes
+        TOTAL_BYTES_LENGTH = 3
+        TOTAL_BATCH_LENGTH = 3
+
+        return prepad + b"A" * (TOTAL_PACKET_LENGTH - HEADER_LENGTH - TELEMETRY_TYPE_LENGTH - TOTAL_BYTES_LENGTH - TOTAL_BATCH_LENGTH)
 
 
 class CCSDS_Chunk_Packet(CCSDS_Packet):
@@ -94,14 +103,14 @@ class CCSDS_Chunk_Packet(CCSDS_Packet):
         data = data + current_chunk_num.to_bytes(CURRENT_CHUNKS_LENGTH, 'big')
 
         rsc = RSCodec(16)  # 16 ecc symbols
-        data += rsc.encode(self.chunk)
+        data += rsc.encode(chunk)
 
         return data
 
 
 if __name__ == "__main__":
-    # print(CCSDS_Start_Packet(1, 11, 200, 120))
-    # print(CCSDS_Start_Packet(1, 11, 200, 120).get_tx_packet())
+    print(CCSDS_Control_Packet(1, 11, 200, 120))
+    print(CCSDS_Control_Packet(1, 11, 200, 120).get_tx_packet())
 
-    # print(CCSDS_Chunk_Packet(1, 11, 200, 120, b"hello"))
-    print(CCSDS_Chunk_Packet(1, 11, 200, 120, b"hello").get_tx_packet())
+    print(CCSDS_Chunk_Packet(1, 11, 200, 120, b"hello" * 24))
+    print(CCSDS_Chunk_Packet(1, 11, 200, 120, b"hello" * 24).get_tx_packet())
