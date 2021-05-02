@@ -37,6 +37,7 @@ def main():
             if ret["fail"] == True:
                 time.sleep(TIMEOUT_TX-2)
                 return_val = b"nack\r\n"
+                ser_payload.flushInput()
                 break
             else:
                 if ret['stop'] == False:
