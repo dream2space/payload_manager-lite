@@ -1,4 +1,4 @@
-from ccsds_packet import CCSDS_Chunk_Packet, CCSDS_Control_Packet
+from ccsds_packet import CCSDS_Packet_Decoder
 import serial
 import time
 
@@ -10,6 +10,8 @@ TOTAL_BATCH_LENGTH = 3
 
 
 def main():
+    ccsds_decoder = CCSDS_Packet_Decoder()
+
     com_port = input("Enter payload transceiver port: ")
     ser_payload = serial.Serial(com_port, baudrate=115200, timeout=None)
 
@@ -24,10 +26,16 @@ def main():
 
     batch_counter = 1
     packet_count = 1
+    recv_bytes = []
     while batch_counter <= total_batch_expected:
         while packet_count <= 6:
-            ser_payload.read(149)
+            ser_bytes = ser_payload.read(149)
             packet_count += 1
+
+            if packet_count <= 5:
+                recv_bytes.append(ser_bytes)
+            else:
+                print(ser_bytes)
 
         time.sleep(0.2)
         ser_payload.write(b"ack\r\n")

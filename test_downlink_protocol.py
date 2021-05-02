@@ -133,13 +133,14 @@ def main():
         print(f"BEGIN SEND: BATCH {current_batch}")
         for batch in batches:
             packet_count = 1
-            # Do batch send - 5 packets then a stop packet
-            for packet in batch:
+            for i in range(len(batch)):
+                packet = batch[i]
 
-                if packet_count <= 5:
+                # Do batch send - 5 packets then a stop packet
+                if isinstance(packet, CCSDS_Chunk_Packet):
                     print(
                         f"Sending: packet {packet_count} from batch {current_batch}")
-                else:
+                elif isinstance(packet, CCSDS_Control_Packet):
                     print(f"Sending: Stop packet from batch {current_batch}")
 
                 packet_count += 1
