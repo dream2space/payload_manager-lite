@@ -111,7 +111,7 @@ def main():
         batches = prepare_tx_batch(enc_img_bytes)
 
         print(len(batches))
-        print(len(batches[0])
+        print(len(batches[0]))
 
 
 if __name__ == "__main__":
