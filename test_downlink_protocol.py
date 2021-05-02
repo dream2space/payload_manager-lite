@@ -11,6 +11,8 @@ TEST_FILEPATH = '/home/pi/Desktop/Mission/2021-04-19_09:57:00'
 #### DOWNLINK CONSTANTS ####
 BATCH_SIZE = 5
 PRE_ENC_CHUNK_SIZE = 120  # bytes, w/o 16 bytes rs encoding yet
+TELEMETRY_PACKET_TYPE_DOWNLINK_START = 30
+TELEMETRY_PACKET_TYPE_DOWNLINK_PACKET = 31
 
 
 # Given mission folder path, obtain list of images path
@@ -44,6 +46,39 @@ def extract_enc_img_bytes(img_filepath):
     return compressed_enc
 
 
+def prepare_tx_batch(enc_img_bytes):
+
+    # Returns a list of chunks of bytes, given chunk size and bytearray
+    def chop_bytes(bytes_arr, chunk_size):
+        chunk_arr = []
+        idx = 0
+        while idx + chunk_size < len(bytes_arr):
+            chunk_arr.append(bytes_arr[idx:idx + chunk_size])
+            idx = idx + chunk_size
+        # Remaining odd sized chunk
+        chunk_arr.append(bytes_arr[idx:])
+        return chunk_arr
+
+    # Given an list of chunks, split them into list of batches given a batch size
+    def split_batch(chunks_arr, batch_size):
+        batch_arr = []
+        idx = 0
+        while idx + batch_size <= len(chunks_arr):
+            batch_arr.append(chunks_arr[idx:idx + batch_size])
+            idx = idx + batch_size
+        # Remaining odd sized chunk
+        batch_arr.append(chunks_arr[idx:])
+        return batch_arr
+
+    # Chop up bytes into chunks and prepare CCSDS packet
+    chunk_list = chop_bytes(enc_img_bytes, CHUNK_SIZE)
+
+    # Split chunks into batches
+    batch_list = split_batch(chunk_list, BATCH_SIZE)
+
+    return batch_list
+
+
 def main():
     ser_downlink = serial.Serial("/dev/ttyUSB0", baudrate=115200, timeout=10)
 
@@ -56,6 +91,9 @@ def main():
     for filepath in filepath_list:
         enc_img_bytes = extract_enc_img_bytes(filepath)
         total_bytes = len(enc_img_bytes)
+
+        batches = prepare_tx_batch(total_bytes)
+        print(len(batches))
 
 
 if __name__ == "__main__":
