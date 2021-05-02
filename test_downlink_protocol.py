@@ -23,6 +23,10 @@ def obtain_downlink_images_filepaths(mission_folder_path):
 
 # Given filepath to image, compress and encode the image bytes and return the bytes
 def extract_enc_img_bytes(img_filepath):
+    # Grant permission to script if not already done so
+    os.chmod("prep_test.sh", 0o777)
+    os.chmod("cleanup.sh", 0o777)
+
     # Call bash script to execute prep script
     # base64 + gzip
     prep_filepath = './prep_test.sh ' + img_filepath
