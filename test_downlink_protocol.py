@@ -117,7 +117,7 @@ def main():
 
         current_batch = 1
         print(f"BEGIN SEND: BATCH {current_batch}")
-        for batch_num in batches:
+        for batch_num in range(len(batches)):
             batch = batches[batch_num]
             packet_count = 1
             for i in range(len(batch)):
