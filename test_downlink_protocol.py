@@ -118,7 +118,13 @@ def main():
         enc_img_bytes = extract_enc_img_bytes(filepath)
         batches = prepare_tx_batch(enc_img_bytes)
 
-        print((batches[0])[0].get_tx_packet())
+        print(f"Number of batches: {len(batches)}")
+
+        for batch in batches:
+            # Do batch send - 5 packets then a stop packet
+            for packet in batch:
+                print(type(packet))
+            print()
 
 
 if __name__ == "__main__":
