@@ -92,7 +92,7 @@ def main():
         enc_img_bytes = extract_enc_img_bytes(filepath)
         total_bytes = len(enc_img_bytes)
 
-        batches = prepare_tx_batch(total_bytes)
+        batches = prepare_tx_batch(enc_img_bytes)
         print(len(batches))
 
 
