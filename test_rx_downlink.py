@@ -11,7 +11,7 @@ def main():
     ser_payload = serial.Serial(com_port, baudrate=115200, timeout=None)
 
     start_packet = ser_payload.read(149)
-    ser_payload.timeout = 5
+    # ser_payload.timeout = 5
 
     # Extract out useful data from padded packet
     start_packet = start_packet[:13]
