@@ -59,7 +59,7 @@ class CCSDS_Control_Packet(CCSDS_Packet):
         super().__init__(packet_seq_num, packet_data)
 
     def __str__(self):
-        return f"start|seqnum:{self.packet_seq_num}|len:{len(self.get_tx_packet())}"
+        return f"control|seqnum:{self.packet_seq_num}|len:{len(self.get_tx_packet())}"
 
     def get_tx_packet(self):
         return self._pad_tx_packet(self.header + self.packet_data)

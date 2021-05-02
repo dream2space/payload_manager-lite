@@ -134,6 +134,7 @@ def main():
                         f"Sending: packet {packet_count} from batch {batch_num+1}")
                 elif isinstance(packet, CCSDS_Control_Packet):
                     print(f"Sending: Stop packet from batch {batch_num+1}")
+                    print(packet)
 
                 packet_count += 1
                 ser_downlink.write(packet.get_tx_packet())
@@ -153,9 +154,6 @@ def main():
                 print(f"Received {ack}")
                 print()
                 time.sleep(TIME_BETWEEN_PACKETS)
-
-        # Resend the downlink packet again
-        ser_downlink.write(packet.get_tx_packet())
 
 
 if __name__ == "__main__":
