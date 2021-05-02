@@ -137,7 +137,7 @@ def main():
                 ser_downlink.write(packet.get_tx_packet())
                 time.sleep(TIME_BETWEEN_PACKETS)
 
-            # ack = ser_downlink.read(149)
+            ack = ser_downlink.read(149)
             time.sleep(TIME_BETWEEN_PACKETS)
 
             current_batch += 1
