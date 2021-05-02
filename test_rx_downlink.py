@@ -40,7 +40,7 @@ def main():
                     recv_bytes.append(ser_bytes)
                 else:
                     batch_counter += 1
-                    time.sleep(TIME_BETWEEN_PACKETS*5)
+                    time.sleep(TIME_BETWEEN_PACKETS*2)
                     break
 
         print()
