@@ -71,7 +71,7 @@ def prepare_tx_batch(enc_img_bytes):
         return batch_arr
 
     # Chop up bytes into chunks and prepare CCSDS packet
-    chunk_list = chop_bytes(enc_img_bytes, CHUNK_SIZE)
+    chunk_list = chop_bytes(enc_img_bytes, PRE_ENC_CHUNK_SIZE)
 
     # Split chunks into batches
     batch_list = split_batch(chunk_list, BATCH_SIZE)
