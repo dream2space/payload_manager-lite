@@ -1,4 +1,3 @@
-from archive.payload_manager_helper import BATCH_SIZE, CHUNK_SIZE
 from ccsds_packet import CCSDS_Chunk_Packet, CCSDS_Control_Packet
 import subprocess
 import serial
