@@ -117,8 +117,12 @@ def main():
         time.sleep(TIME_SLEEP_AFTER_START)
 
         current_batch = 1
-        print(f"BEGIN SEND: BATCH {current_batch}")
+        is_resend = False
         for batch_num in range(len(batches)):
+            if is_resend:
+                batch_num -= 1
+                is_resend = False
+
             batch = batches[batch_num]
             packet_count = 1
             for i in range(len(batch)):
@@ -127,9 +131,9 @@ def main():
                 # Do batch send - 5 packets then a stop packet
                 if isinstance(packet, CCSDS_Chunk_Packet):
                     print(
-                        f"Sending: packet {packet_count} from batch {current_batch}")
+                        f"Sending: packet {packet_count} from batch {batch_num+1}")
                 elif isinstance(packet, CCSDS_Control_Packet):
-                    print(f"Sending: Stop packet from batch {current_batch}")
+                    print(f"Sending: Stop packet from batch {batch_num+1}")
 
                 packet_count += 1
                 ser_downlink.write(packet.get_tx_packet())
@@ -142,14 +146,13 @@ def main():
                 print("Nack!")
                 print()
                 # resend
-                batch_num -= 1
+                is_resent = True
                 time.sleep(TIME_BETWEEN_PACKETS*2)
 
             else:
                 print(f"Received {ack}")
                 print()
                 time.sleep(TIME_BETWEEN_PACKETS)
-                current_batch += 1
 
 
 if __name__ == "__main__":
