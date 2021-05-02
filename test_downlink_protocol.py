@@ -6,13 +6,15 @@ import pprint
 import os
 
 
-TEST_FILEPATH = '/home/pi/Desktop/Mission/2021-04-19_09:57:00'
+# TEST_FILEPATH = '/home/pi/Desktop/Mission/2021-04-19_09:57:00
+TEST_FILEPATH = '/home/pi/Desktop/test'
 
 #### DOWNLINK CONSTANTS ####
 BATCH_SIZE = 5
 PRE_ENC_CHUNK_SIZE = 120  # bytes, w/o 16 bytes rs encoding yet
 TELEMETRY_PACKET_TYPE_DOWNLINK_START = 30
 TELEMETRY_PACKET_TYPE_DOWNLINK_PACKET = 31
+TELEMETRY_PACKET_TYPE_DOWNLINK_STOP = 32
 
 
 # Given mission folder path, obtain list of images path
@@ -92,6 +94,12 @@ def prepare_tx_batch(enc_img_bytes):
             packet_seq_num += 1
             chunk_num += 1
 
+        # Put stop packet
+        stop_packet = CCSDS_Control_Packet(
+            packet_seq_num, TELEMETRY_PACKET_TYPE_DOWNLINK_STOP, 0, 0)
+        new_batch.append(stop_packet)
+        packet_seq_num += 1
+
         packet_batch_list.append(new_batch)
 
     return packet_batch_list
@@ -110,8 +118,7 @@ def main():
         enc_img_bytes = extract_enc_img_bytes(filepath)
         batches = prepare_tx_batch(enc_img_bytes)
 
-        print(len(batches))
-        print(len(batches[0]))
+        print((batches[0])[0].get_tx_packet())
 
 
 if __name__ == "__main__":
