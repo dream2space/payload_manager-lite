@@ -126,7 +126,7 @@ def main():
 
         start_packet = CCSDS_Control_Packet(
             0, TELEMETRY_PACKET_TYPE_DOWNLINK_START, len(enc_img_bytes), len(batches))
-        ser_downlink.write(start_packet)
+        ser_downlink.write(start_packet.get_tx_packet())
         time.sleep(TIME_SLEEP_AFTER_START)
 
         current_batch = 1
