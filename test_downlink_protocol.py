@@ -135,9 +135,16 @@ def main():
 
             print("Wait for ack/nack")
             ack = ser_downlink.readline()
-            print(f"Received {ack}")
-            print()
-            time.sleep(TIME_BETWEEN_PACKETS)
+
+            if ack == b"":
+                print("Nack!")
+                # resend
+                i -= 1
+
+            else:
+                print(f"Received {ack}")
+                print()
+                time.sleep(TIME_BETWEEN_PACKETS)
 
             current_batch += 1
 
