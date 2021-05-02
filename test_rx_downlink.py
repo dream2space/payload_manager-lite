@@ -23,21 +23,28 @@ def main():
     packet_count = 1
     recv_bytes = []
     while batch_counter <= total_batch_expected:
+        return_val = b"ack\r\n"
 
         while True:  # For stop packet
             ser_bytes = ser_payload.read(TOTAL_PACKET_LENGTH)
 
             ret = ccsds_decoder.quick_parse(ser_bytes)
             print(ret)
-            if ret['stop'] == False:
-                recv_bytes.append(ser_bytes)
-            else:
+
+            if ret["fail"] == True:
+                time.sleep(TIMEOUT_TX-2)
+                return_val = b"nack\r\n"
                 break
+            else:
+                if ret['stop'] == False:
+                    recv_bytes.append(ser_bytes)
+                else:
+                    batch_counter += 1
+                    time.sleep(TIME_BETWEEN_PACKETS*5)
+                    break
 
         print()
-        time.sleep(TIME_BETWEEN_PACKETS*5)
-        ser_payload.write(b"ack\r\n")
-        batch_counter += 1
+        ser_payload.write(return_val)
 
 
 if __name__ == "__main__":

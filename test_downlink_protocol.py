@@ -138,9 +138,14 @@ def main():
             print("Wait for ack/nack")
             ack = ser_downlink.readline()
 
-            if ack == b"":
+            if ack == b"nack\r\n":
                 print("Nack!")
                 print()
+                # resend
+                batch_num -= 1
+
+            elif ack == b"":
+                # ack timeout
                 # resend
                 batch_num -= 1
 
