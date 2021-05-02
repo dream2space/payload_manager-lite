@@ -164,8 +164,7 @@ class CCSDS_Packet_Decoder():
 
     # Quickly parse and return batch and chunk number
     def quick_parse(self, CCSDS_Packet):
-        telemetry_packet_type = int.from_bytes(
-            CCSDS_Packet[6], byteorder='big', signed=False)
+        telemetry_packet_type = CCSDS_Packet[6]
         if telemetry_packet_type == TELEMETRY_PACKET_TYPE_DOWNLINK_STOP:
             return {"stop": True}
         elif telemetry_packet_type == TELEMETRY_PACKET_TYPE_DOWNLINK_PACKET:
