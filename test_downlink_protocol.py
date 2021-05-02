@@ -135,8 +135,13 @@ def main():
             packet_count = 1
             # Do batch send - 5 packets then a stop packet
             for packet in batch:
-                print(
-                    f"Sending: packet {packet_count} from batch {current_batch}")
+
+                if packet_count <= 5:
+                    print(
+                        f"Sending: packet {packet_count} from batch {current_batch}")
+                else:
+                    print(f"Sending: Stop packet from batch {current_batch}")
+
                 packet_count += 1
                 ser_downlink.write(packet.get_tx_packet())
                 time.sleep(TIME_BETWEEN_PACKETS)
