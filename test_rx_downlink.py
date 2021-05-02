@@ -10,7 +10,7 @@ def main():
     com_port = input("Enter payload transceiver port: ")
     ser_payload = serial.Serial(com_port, baudrate=115200, timeout=None)
 
-    start_packet = ser_payload.read(149)
+    start_packet = ser_payload.read(TOTAL_PACKET_LENGTH)
     # ser_payload.timeout = 5
 
     # Extract out useful data from padded packet
