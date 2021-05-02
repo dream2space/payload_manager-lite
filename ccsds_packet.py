@@ -1,5 +1,5 @@
 from reedsolo import RSCodec
-
+from parameters import *
 
 #### DOWNLINK CONSTANTS ####
 BATCH_SIZE = 5
@@ -124,19 +124,14 @@ class CCSDS_Packet_Decoder():
 
     # Takes in bytearray to parse
     def parse(self, CCSDS_Packet):
-        TELEMETRY_TYPE_LENGTH = 1  # bytes
-        CURRENT_CHUNKS_LENGTH = 3
-        CURRENT_BATCH_LENGTH = 3
-        TOTAL_BYTES_LENGTH = 3
-        TOTAL_BATCH_LENGTH = 3
 
         # Parse header
         # header = self._parse_header(CCSDS_Packet)
 
         # Detect if it is Chunk or Stop
         packet_data = CCSDS_Packet[6:]
-        telemetry_packet_type = packet_data[6].to_bytes(
-            TELEMETRY_TYPE_LENGTH, 'big')
+        telemetry_packet_type = int.from_bytes(
+            packet_data[0], byteorder='big', signed=False)
 
         if telemetry_packet_type == TELEMETRY_PACKET_TYPE_DOWNLINK_PACKET:
             return self._parse_chunk(packet_data)
@@ -166,6 +161,20 @@ class CCSDS_Packet_Decoder():
 
     def _parse_stop(self):
         return b"stop"
+
+    # Quickly parse and return batch and chunk number
+    def quick_parse(self, CCSDS_Packet):
+        telemetry_packet_type = CCSDS_Packet[0].to_bytes(
+            TELEMETRY_TYPE_LENGTH, 'big')
+        if telemetry_packet_type == TELEMETRY_PACKET_TYPE_DOWNLINK_STOP:
+            return {"stop": True}
+        elif telemetry_packet_type == TELEMETRY_PACKET_TYPE_DOWNLINK_PACKET:
+            # Extract batch and chunk number
+            curr_batch = int.from_bytes(
+                CCSDS_Packet[7:10], byteorder='big', signed=False)
+            curr_chunk = int.from_bytes(
+                CCSDS_Packet[10:13], byteorder='big', signed=False)
+            return {"stop": False, "curr_batch": curr_batch, "curr_chunk": curr_chunk}
 
 
 if __name__ == "__main__":

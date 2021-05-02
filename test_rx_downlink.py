@@ -24,15 +24,15 @@ def main():
     recv_bytes = []
     while batch_counter <= total_batch_expected:
 
-        while packet_count <= BATCH_SIZE+1:  # For stop packet
+        while True:  # For stop packet
             ser_bytes = ser_payload.read(TOTAL_PACKET_LENGTH)
 
-            if packet_count <= BATCH_SIZE:
+            ret = ccsds_decoder.quick_parse(ser_bytes)
+            print(ret)
+            if ret['stop'] == False:
                 recv_bytes.append(ser_bytes)
             else:
-                print(f"stop - {batch_counter}")
-
-            packet_count += 1  # Add at the end
+                break
 
         time.sleep(TIME_BETWEEN_PACKETS*2)
         ser_payload.write(b"ack\r\n")

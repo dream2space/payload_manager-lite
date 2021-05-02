@@ -96,7 +96,8 @@ def prepare_tx_batch(enc_img_bytes):
 
 
 def main():
-    ser_downlink = serial.Serial("/dev/ttyUSB0", baudrate=115200, timeout=4)
+    ser_downlink = serial.Serial(
+        "/dev/ttyUSB0", baudrate=115200, timeout=TIMEOUT_TX)
 
     # Get list of files to downlink
     filepath_list = obtain_downlink_images_filepaths(TEST_FILEPATH)
@@ -139,6 +140,7 @@ def main():
 
             if ack == b"":
                 print("Nack!")
+                print()
                 # resend
                 batch_num -= 1
 
