@@ -3,6 +3,7 @@ from ccsds_packet import CCSDS_Chunk_Packet, CCSDS_Control_Packet
 import subprocess
 import serial
 import pprint
+import time
 import os
 
 
@@ -15,6 +16,9 @@ PRE_ENC_CHUNK_SIZE = 120  # bytes, w/o 16 bytes rs encoding yet
 TELEMETRY_PACKET_TYPE_DOWNLINK_START = 30
 TELEMETRY_PACKET_TYPE_DOWNLINK_PACKET = 31
 TELEMETRY_PACKET_TYPE_DOWNLINK_STOP = 32
+
+TIME_SLEEP_AFTER_START = 0.5
+TIME_BETWEEN_PACKETS = 0.1
 
 
 # Given mission folder path, obtain list of images path
@@ -120,11 +124,23 @@ def main():
 
         print(f"Number of batches: {len(batches)}")
 
+        start_packet = CCSDS_Control_Packet(
+            0, TELEMETRY_PACKET_TYPE_DOWNLINK_START, len(enc_img_bytes), len(batches))
+        ser_downlink.write(start_packet)
+        time.sleep(TIME_SLEEP_AFTER_START)
+
+        current_batch = 1
+        print(f"BEGIN SEND: BATCH {current_batch}")
         for batch in batches:
             # Do batch send - 5 packets then a stop packet
             for packet in batch:
-                print(type(packet))
-            print()
+                ser_downlink.write(packet.get_tx_packet())
+                time.sleep(TIME_BETWEEN_PACKETS)
+
+            # ack = ser_downlink.read(149)
+            time.sleep(TIME_BETWEEN_PACKETS)
+
+            current_batch += 1
 
 
 if __name__ == "__main__":
