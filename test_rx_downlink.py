@@ -34,7 +34,7 @@ def main():
             else:
                 break
 
-        time.sleep(TIME_BETWEEN_PACKETS*2)
+        time.sleep(TIME_BETWEEN_PACKETS*5)
         ser_payload.write(b"ack\r\n")
         packet_count = 1
         batch_counter += 1
