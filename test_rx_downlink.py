@@ -1,5 +1,6 @@
 from ccsds_packet import CCSDS_Packet_Decoder
 from parameters import *
+from datetime import datetime
 import serial
 import time
 
@@ -22,6 +23,7 @@ def main():
     batch_counter = 1
     packet_count = 1
     recv_bytes = []
+    transfer_start = datetime.now()
     while batch_counter <= total_batch_expected:
         return_val = b"ack\r\n"
 
@@ -45,6 +47,10 @@ def main():
 
         print()
         ser_payload.write(return_val)
+
+    transfer_end = datetime.now()
+    elapsed_time = transfer_end - transfer_start
+    print(f"Time elapsed: {elapsed_time}")
 
 
 if __name__ == "__main__":
