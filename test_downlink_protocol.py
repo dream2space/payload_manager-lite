@@ -154,6 +154,9 @@ def main():
                 print()
                 time.sleep(TIME_BETWEEN_PACKETS)
 
+        # Resend the downlink packet again
+        ser_downlink.write(packet.get_tx_packet())
+
 
 if __name__ == "__main__":
     main()
