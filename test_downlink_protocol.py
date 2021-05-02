@@ -146,7 +146,7 @@ def main():
                 print("Nack!")
                 print()
                 # resend
-                is_resent = True
+                is_resend = True
                 time.sleep(TIME_BETWEEN_PACKETS*2)
 
             else:

@@ -20,11 +20,9 @@ def main():
     total_batch_expected = int.from_bytes(start_packet[10:], 'big')
     print(f"Total batches: {total_batch_expected}")
 
-    batch_counter = 1
-    packet_count = 1
     recv_bytes = []
     transfer_start = datetime.now()
-    while batch_counter <= total_batch_expected:
+    while True:
         return_val = b"ack\r\n"
         temp_list = []
 
@@ -43,13 +41,15 @@ def main():
                 if ret['stop'] == False:
                     temp_list.append(ser_bytes)
                 else:
-                    batch_counter += 1
                     time.sleep(TIME_BETWEEN_PACKETS*2)
                     recv_bytes += temp_list
                     break
 
         print()
         ser_payload.write(return_val)
+
+        if ret['curr_batch'] == total_batch_expected and ret['stop']:
+            break
 
     transfer_end = datetime.now()
     elapsed_time = transfer_end - transfer_start
