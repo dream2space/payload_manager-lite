@@ -76,7 +76,25 @@ def prepare_tx_batch(enc_img_bytes):
     # Split chunks into batches
     batch_list = split_batch(chunk_list, BATCH_SIZE)
 
-    return batch_list
+    # Create CCSDS Packets
+    packet_batch_list = []
+    packet_seq_num = 1
+    for batch_num in range(len(batch_list)):
+        batch = batch_list[batch_num]
+
+        chunk_num = 1
+        new_batch = []
+        for chunk in batch:
+            # Create CCSDS Packet for each chunk
+            packet = CCSDS_Chunk_Packet(
+                packet_seq_num, TELEMETRY_PACKET_TYPE_DOWNLINK_PACKET, batch_num+1, chunk_num, chunk)
+            new_batch.append(packet)
+            packet_seq_num += 1
+            chunk_num += 1
+
+        packet_batch_list.append(new_batch)
+
+    return packet_batch_list
 
 
 def main():
@@ -90,10 +108,11 @@ def main():
     total_img_num = len(filepath_list)
     for filepath in filepath_list:
         enc_img_bytes = extract_enc_img_bytes(filepath)
-        total_bytes = len(enc_img_bytes)
-
         batches = prepare_tx_batch(enc_img_bytes)
-        print(len(batches))
+
+        for batch in batches[1:4]:
+            for pkt in batch[1:4]:
+                print(type(pkt))
 
 
 if __name__ == "__main__":
