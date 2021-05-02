@@ -96,7 +96,7 @@ def prepare_tx_batch(enc_img_bytes):
 
 
 def main():
-    ser_downlink = serial.Serial("/dev/ttyUSB0", baudrate=115200, timeout=10)
+    ser_downlink = serial.Serial("/dev/ttyUSB0", baudrate=115200, timeout=4)
 
     # Get list of files to downlink
     filepath_list = obtain_downlink_images_filepaths(TEST_FILEPATH)
@@ -117,7 +117,8 @@ def main():
 
         current_batch = 1
         print(f"BEGIN SEND: BATCH {current_batch}")
-        for batch in batches:
+        for batch_num in batches:
+            batch = batches[batch_num]
             packet_count = 1
             for i in range(len(batch)):
                 packet = batch[i]
@@ -139,7 +140,7 @@ def main():
             if ack == b"":
                 print("Nack!")
                 # resend
-                i -= 1
+                batch_num -= 1
 
             else:
                 print(f"Received {ack}")
