@@ -132,12 +132,19 @@ def main():
         current_batch = 1
         print(f"BEGIN SEND: BATCH {current_batch}")
         for batch in batches:
+            packet_count = 1
             # Do batch send - 5 packets then a stop packet
             for packet in batch:
+                print(
+                    f"Sending: packet {packet_count} from batch {current_batch}")
+                packet_count += 1
                 ser_downlink.write(packet.get_tx_packet())
                 time.sleep(TIME_BETWEEN_PACKETS)
 
+            print("Wait for ack/nack")
             ack = ser_downlink.read(149)
+            print("Received ack/nack")
+            print()
             time.sleep(TIME_BETWEEN_PACKETS)
 
             current_batch += 1
