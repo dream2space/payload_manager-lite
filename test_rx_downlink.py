@@ -1,12 +1,7 @@
 from ccsds_packet import CCSDS_Packet_Decoder
+from parameters import *
 import serial
 import time
-
-TOTAL_PACKET_LENGTH = 149
-HEADER_LENGTH = 6
-TELEMETRY_TYPE_LENGTH = 1  # bytes
-TOTAL_BYTES_LENGTH = 3
-TOTAL_BATCH_LENGTH = 3
 
 
 def main():
@@ -28,17 +23,21 @@ def main():
     packet_count = 1
     recv_bytes = []
     while batch_counter <= total_batch_expected:
-        while packet_count <= 6:
-            ser_bytes = ser_payload.read(149)
-            packet_count += 1
 
-            if packet_count <= 5:
+        while packet_count <= BATCH_SIZE+1:  # For stop packet
+            ser_bytes = ser_payload.read(TOTAL_PACKET_LENGTH)
+
+            if packet_count <= BATCH_SIZE:
                 recv_bytes.append(ser_bytes)
             else:
-                print(ser_bytes)
+                print(f"stop - {batch_counter}")
 
-        time.sleep(0.2)
+            packet_count += 1  # Add at the end
+
+        time.sleep(TIME_BETWEEN_PACKETS*2)
         ser_payload.write(b"ack\r\n")
+        packet_count = 1
+        batch_counter += 1
 
 
 if __name__ == "__main__":

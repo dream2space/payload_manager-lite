@@ -1,23 +1,10 @@
 from ccsds_packet import CCSDS_Chunk_Packet, CCSDS_Control_Packet
+from parameters import *
 import subprocess
 import serial
 import pprint
 import time
 import os
-
-
-# TEST_FILEPATH = '/home/pi/Desktop/Mission/2021-04-19_09:57:00
-TEST_FILEPATH = '/home/pi/Desktop/test'
-
-#### DOWNLINK CONSTANTS ####
-BATCH_SIZE = 5
-PRE_ENC_CHUNK_SIZE = 120  # bytes, w/o 16 bytes rs encoding yet
-TELEMETRY_PACKET_TYPE_DOWNLINK_START = 30
-TELEMETRY_PACKET_TYPE_DOWNLINK_PACKET = 31
-TELEMETRY_PACKET_TYPE_DOWNLINK_STOP = 32
-
-TIME_SLEEP_AFTER_START = 0.5
-TIME_BETWEEN_PACKETS = 0.1
 
 
 # Given mission folder path, obtain list of images path
