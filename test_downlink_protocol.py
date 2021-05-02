@@ -147,8 +147,8 @@ def main():
                 time.sleep(TIME_BETWEEN_PACKETS)
 
             print("Wait for ack/nack")
-            ack = ser_downlink.read(149)
-            print("Received ack/nack")
+            ack = ser_downlink.readline()
+            print(f"Received {ack}")
             print()
             time.sleep(TIME_BETWEEN_PACKETS)
 
