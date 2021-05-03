@@ -11,6 +11,8 @@ def main():
     com_port = input("Enter payload transceiver port: ")
     ser_payload = serial.Serial(com_port)
     ser_payload.baudrate = 115200
+    # Cannot set as nonblocking
+    # else send back all bytes at that point
     ser_payload.timeout = None
 
     start_packet = ser_payload.read(TOTAL_PACKET_LENGTH)
@@ -20,54 +22,38 @@ def main():
 
     total_batch_expected = int.from_bytes(start_packet[10:], 'big')
     print(f"Total batches: {total_batch_expected}")
-    ser_payload.timeout = 0         # Non-blocking
 
     recv_bytes = []
     temp_list = []
     curr_batch = -1
     is_ack = True
-    is_first_send = True
     transfer_start = datetime.now()
     # Receive all batches
     while True:
-
         ser_bytes = ser_payload.read(TOTAL_PACKET_LENGTH)
+        ret = ccsds_decoder.quick_parse(ser_bytes)
+        print(ret)
 
-        # If blank, skip
-        if ser_bytes == b"":
-            # Resend ack/nack if more than 30 sec no new batch since last sent ack/nack
-            if is_first_send == False and (last_send_ack_time - datetime.now()).total_seconds() >= 30:
-                ser_payload.write(return_val)
-            else:
-                continue
-
+        if ret['fail'] == True:
+            is_ack = False
         else:
-            # Packet comes in, process it
-            ret = ccsds_decoder.quick_parse(ser_bytes)
-            print(ret)
-
-            if ret['fail'] == True:
-                is_ack = False
+            if ret['stop'] == False:
+                temp_list.append(ser_bytes)
+                curr_batch = ret['curr_batch']
             else:
-                if ret['stop'] == False:
-                    temp_list.append(ser_bytes)
-                    curr_batch = ret['curr_batch']
+                recv_bytes += temp_list
+                temp_list = []  # Wipe out temp list
+                curr_batch = -1  # Wipe out current batch
+
+                if is_ack:
+                    return_val = b"ack\r\n"
                 else:
-                    recv_bytes += temp_list
-                    temp_list = []  # Wipe out temp list
-                    curr_batch = -1  # Wipe out current batch
+                    return_val = b"nack\r\n"
+                ser_payload.write(return_val)
+                print(f"Sent {return_val}")
 
-                    if is_ack:
-                        return_val = b"ack\r\n"
-                    else:
-                        return_val = b"nack\r\n"
-                    ser_payload.write(return_val)
-                    is_first_send = False
-                    last_send_ack_time = datetime.now()
-                    print(f"Sent {return_val}")
-
-                    if ret['stop'] and curr_batch == total_batch_expected:
-                        break
+                if ret['stop'] and curr_batch == total_batch_expected:
+                    break
 
     transfer_end = datetime.now()
     elapsed_time = transfer_end - transfer_start

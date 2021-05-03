@@ -121,6 +121,7 @@ def main():
             if is_resend:
                 batch_num -= 1
                 is_resend = False
+                print("Resending = {batch_num}")
 
             batch = batches[batch_num]
             packet_count = 1
@@ -143,7 +144,7 @@ def main():
             ack = ser_downlink.readline()
 
             if ack == b"nack\r\n" or ack == b"":
-                print("Nack!")
+                print("Nack or timeout")
                 print()
                 # resend
                 is_resend = True
@@ -152,7 +153,7 @@ def main():
             else:
                 print(f"Received {ack}")
                 print()
-                time.sleep(TIME_BETWEEN_PACKETS)
+            time.sleep(TIME_BETWEEN_PACKETS * 5)
 
 
 if __name__ == "__main__":
