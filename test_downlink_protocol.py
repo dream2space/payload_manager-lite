@@ -136,7 +136,7 @@ def main():
                 packet_count += 1
                 ser_downlink.write(packet.get_tx_packet())
 
-            if batch_num < len(batch) - 1:
+            if batch_num < len(batches) - 1:
                 print("Wait for ack/nack")
                 ack = ser_downlink.readline()
                 if ack == b"nack\r\n" or ack == b"":
