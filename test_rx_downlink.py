@@ -43,7 +43,6 @@ def main():
                     temp_list.append(ser_bytes)
                     curr_batch = ret['curr_batch']
                 else:
-                    time.sleep(TIME_BETWEEN_PACKETS*2)
                     recv_bytes += temp_list
                     break
 
