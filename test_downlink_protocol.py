@@ -117,11 +117,8 @@ def main():
         time.sleep(TIME_SLEEP_AFTER_START)
 
         is_resend = False
-        for batch_num in range(len(batches)):
-            if is_resend:
-                batch_num -= 1
-                is_resend = False
-                print("Resending = {batch_num}")
+        batch_num = 0
+        while batch_num < len(batches):
 
             batch = batches[batch_num]
             packet_count = 1
@@ -147,8 +144,13 @@ def main():
                 is_resend = True
             else:
                 print(f"Received {ack}")
+                batch_num += 1
             print()
             time.sleep(TIME_BETWEEN_PACKETS * 5)
+
+            if is_resend:
+                is_resend = False
+                print(f"Resending = {batch_num}")
 
 
 if __name__ == "__main__":
