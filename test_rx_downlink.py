@@ -51,7 +51,7 @@ def main():
             if ret['stop'] == False and ret['curr_batch'] != prev_batch_recv:
                 temp_list.append(ser_bytes)
                 print(f"Append - {ret}")
-                prev_batch_recv = ret['curr_batch']
+                temp_store = ret['curr_batch']
             elif ret['stop'] == True:
                 # Stop packet received
                 recv_bytes += temp_list
@@ -60,6 +60,7 @@ def main():
                 if is_ack:
                     return_val = b"ack\r\n"
                     is_ack = True
+                    prev_batch_recv = temp_store
                 else:
                     return_val = b"nack\r\n"
                     is_ack = False
