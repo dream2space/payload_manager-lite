@@ -139,18 +139,21 @@ def main():
             # print("Wait for ack/nack")
             ack = ser_downlink.readline()
 
-            if ack == b"nack\r\n" or ack == b"":
-                print("Nack or timeout")
-                is_resend = True
-            else:
-                print(f"Received {ack}")
-                batch_num += 1
-            print()
-            time.sleep(TIME_BETWEEN_PACKETS * 5)
+            if batch_num != len(batch) - 1:
+                if ack == b"nack\r\n" or ack == b"":
+                    print("Nack or timeout")
+                    is_resend = True
+                else:
+                    print(f"Received {ack}")
+                    batch_num += 1
+                print()
+                time.sleep(TIME_BETWEEN_PACKETS * 5)
 
-            if is_resend:
-                is_resend = False
-                print(f"Resending = {batch_num}")
+                if is_resend:
+                    is_resend = False
+                    print(f"Resending = {batch_num}")
+
+    print("done!")
 
 
 if __name__ == "__main__":
