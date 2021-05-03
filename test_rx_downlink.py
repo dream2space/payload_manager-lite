@@ -33,7 +33,7 @@ def main():
     while True:
         ser_bytes = ser_payload.read(TOTAL_PACKET_LENGTH)
 
-        if prev_batch_recv == total_batch_expected:
+        if prev_batch_recv + 1 == total_batch_expected:
             ser_payload.timeout = TIMEOUT_RX
             print(ser_bytes)
 
