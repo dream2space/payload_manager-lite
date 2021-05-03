@@ -34,6 +34,7 @@ def main():
 
         if curr_batch == total_batch_expected:
             ser_payload.timeout = TIMEOUT_RX
+            print(ser_bytes)
 
         if ser_bytes == b"":
             # Last packet received
@@ -58,7 +59,6 @@ def main():
                     is_ack = True
                 else:
                     return_val = b"nack\r\n"
-                    ser_payload.flush()
                     is_ack = False
 
                 time.sleep(TIME_BEFORE_ACK)
