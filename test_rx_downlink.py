@@ -46,8 +46,8 @@ def main():
                     recv_bytes += temp_list
                     break
 
-        print()
         ser_payload.write(return_val)
+        print(f"Sent {return_val}")
 
         if ret['stop'] and curr_batch == total_batch_expected:
             break
