@@ -55,15 +55,15 @@ def main():
 
                 if is_ack:
                     return_val = b"ack\r\n"
+                    is_ack = True
                 else:
                     return_val = b"nack\r\n"
+                    ser_payload.flush()
+                    is_ack = False
 
                 time.sleep(TIME_BEFORE_ACK)
                 ser_payload.write(return_val)
                 print(f"Sent {return_val}")
-
-                if ret['stop'] and curr_batch == total_batch_expected:
-                    break
 
     transfer_end = datetime.now()
     elapsed_time = transfer_end - transfer_start

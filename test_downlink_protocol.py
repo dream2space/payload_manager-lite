@@ -142,6 +142,7 @@ def main():
                 if ack == b"nack\r\n" or ack == b"":
                     print("Nack or timeout")
                     is_resend = True
+                    ser_downlink.flush()
                 else:
                     print(f"Received {ack}")
                     batch_num += 1
