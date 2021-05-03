@@ -55,6 +55,7 @@ def main():
                     return_val = b"ack\r\n"
                 else:
                     return_val = b"nack\r\n"
+                    time.sleep(TIME_BETWEEN_PACKETS*2)
                 ser_payload.write(return_val)
                 print(f"Sent {return_val}")
 

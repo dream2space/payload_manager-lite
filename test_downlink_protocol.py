@@ -145,14 +145,10 @@ def main():
 
             if ack == b"nack\r\n" or ack == b"":
                 print("Nack or timeout")
-                print()
-                # resend
                 is_resend = True
-                time.sleep(TIME_BETWEEN_PACKETS*2)
-
             else:
                 print(f"Received {ack}")
-                print()
+            print()
             time.sleep(TIME_BETWEEN_PACKETS * 5)
 
 
