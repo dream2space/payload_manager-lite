@@ -22,6 +22,7 @@ def main():
 
     total_batch_expected = int.from_bytes(start_packet[10:], 'big')
     print(f"Total batches: {total_batch_expected}")
+    ser_payload.timeout = TIMEOUT_RX
 
     recv_bytes = []
     temp_list = []
@@ -31,6 +32,11 @@ def main():
     # Receive all batches
     while True:
         ser_bytes = ser_payload.read(TOTAL_PACKET_LENGTH)
+
+        if ser_bytes == b"":
+            # Last packet received
+            break
+
         ret = ccsds_decoder.quick_parse(ser_bytes)
         print(ret)
 
