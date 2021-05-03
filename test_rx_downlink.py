@@ -42,7 +42,7 @@ def main():
             break
 
         ret = ccsds_decoder.quick_parse(ser_bytes)
-        print(ret)
+        # print(ret)
 
         if ret['fail'] == True:
             is_ack = False
@@ -50,6 +50,7 @@ def main():
 
             if ret['stop'] == False and ret['curr_batch'] != prev_batch_recv:
                 temp_list.append(ser_bytes)
+                print(f"Append - {ret}")
                 prev_batch_recv = ret['curr_batch']
             elif ret['stop'] == True:
                 # Stop packet received
