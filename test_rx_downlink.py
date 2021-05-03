@@ -41,32 +41,33 @@ def main():
             else:
                 continue
 
-        # Packet comes in, process it
-        ret = ccsds_decoder.quick_parse(ser_bytes)
-        print(ret)
-
-        if ret['fail'] == True:
-            is_ack = False
         else:
-            if ret['stop'] == False:
-                temp_list.append(ser_bytes)
-                curr_batch = ret['curr_batch']
+            # Packet comes in, process it
+            ret = ccsds_decoder.quick_parse(ser_bytes)
+            print(ret)
+
+            if ret['fail'] == True:
+                is_ack = False
             else:
-                recv_bytes += temp_list
-                temp_list = []  # Wipe out temp list
-                curr_batch = -1  # Wipe out current batch
-
-                if is_ack:
-                    return_val = b"ack\r\n"
+                if ret['stop'] == False:
+                    temp_list.append(ser_bytes)
+                    curr_batch = ret['curr_batch']
                 else:
-                    return_val = b"nack\r\n"
-                ser_payload.write(return_val)
-                is_first_send = False
-                last_send_ack_time = datetime.now()
-                print(f"Sent {return_val}")
+                    recv_bytes += temp_list
+                    temp_list = []  # Wipe out temp list
+                    curr_batch = -1  # Wipe out current batch
 
-                if ret['stop'] and curr_batch == total_batch_expected:
-                    break
+                    if is_ack:
+                        return_val = b"ack\r\n"
+                    else:
+                        return_val = b"nack\r\n"
+                    ser_payload.write(return_val)
+                    is_first_send = False
+                    last_send_ack_time = datetime.now()
+                    print(f"Sent {return_val}")
+
+                    if ret['stop'] and curr_batch == total_batch_expected:
+                        break
 
     transfer_end = datetime.now()
     elapsed_time = transfer_end - transfer_start
