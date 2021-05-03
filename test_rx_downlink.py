@@ -25,14 +25,15 @@ def main():
 
     recv_bytes = []
     temp_list = []
-    curr_batch = -1
+    prev_batch_recv = -1
+
     is_ack = True
     transfer_start = datetime.now()
     # Receive all batches
     while True:
         ser_bytes = ser_payload.read(TOTAL_PACKET_LENGTH)
 
-        if curr_batch == total_batch_expected:
+        if prev_batch_recv == total_batch_expected:
             ser_payload.timeout = TIMEOUT_RX
             print(ser_bytes)
 
@@ -46,13 +47,14 @@ def main():
         if ret['fail'] == True:
             is_ack = False
         else:
-            if ret['stop'] == False:
+
+            if ret['stop'] == False and ret['curr_batch'] != prev_batch_recv:
                 temp_list.append(ser_bytes)
-                curr_batch = ret['curr_batch']
-            else:
+                prev_batch_recv = ret['curr_batch']
+            elif ret['stop'] == True:
+                # Stop packet received
                 recv_bytes += temp_list
                 temp_list = []  # Wipe out temp list
-                curr_batch = -1  # Wipe out current batch
 
                 if is_ack:
                     return_val = b"ack\r\n"
