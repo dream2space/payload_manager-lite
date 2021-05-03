@@ -139,7 +139,7 @@ def main():
                 packet_count += 1
                 ser_downlink.write(packet.get_tx_packet())
 
-            print("Wait for ack/nack")
+            # print("Wait for ack/nack")
             ack = ser_downlink.readline()
 
             if ack == b"nack\r\n" or ack == b"":
