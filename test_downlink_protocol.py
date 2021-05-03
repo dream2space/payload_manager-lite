@@ -116,7 +116,6 @@ def main():
         ser_downlink.write(start_packet.get_tx_packet())
         time.sleep(TIME_SLEEP_AFTER_START)
 
-        current_batch = 1
         is_resend = False
         for batch_num in range(len(batches)):
             if is_resend:
