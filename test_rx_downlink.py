@@ -11,7 +11,7 @@ def main():
     com_port = input("Enter payload transceiver port: ")
     ser_payload = serial.Serial(com_port)
     ser_payload.baudrate = 115200
-    ser_payload.timeout = 0         # Non-blocking
+    ser_payload.timeout = None
 
     start_packet = ser_payload.read(TOTAL_PACKET_LENGTH)
 
@@ -20,6 +20,7 @@ def main():
 
     total_batch_expected = int.from_bytes(start_packet[10:], 'big')
     print(f"Total batches: {total_batch_expected}")
+    ser_payload.timeout = 0         # Non-blocking
 
     recv_bytes = []
     temp_list = []
