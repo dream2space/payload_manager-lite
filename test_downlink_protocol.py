@@ -153,6 +153,8 @@ def main():
                 if is_resend:
                     is_resend = False
                     print(f"Resending = {batch_num}")
+            else:
+                break
 
     print("done!")
 
