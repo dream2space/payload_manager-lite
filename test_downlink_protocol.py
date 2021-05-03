@@ -138,7 +138,6 @@ def main():
 
                 packet_count += 1
                 ser_downlink.write(packet.get_tx_packet())
-                time.sleep(TIME_BETWEEN_PACKETS)
 
             print("Wait for ack/nack")
             ack = ser_downlink.readline()

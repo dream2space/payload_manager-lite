@@ -22,7 +22,6 @@ def main():
 
     total_batch_expected = int.from_bytes(start_packet[10:], 'big')
     print(f"Total batches: {total_batch_expected}")
-    ser_payload.timeout = TIMEOUT_RX
 
     recv_bytes = []
     temp_list = []
@@ -32,6 +31,9 @@ def main():
     # Receive all batches
     while True:
         ser_bytes = ser_payload.read(TOTAL_PACKET_LENGTH)
+
+        if curr_batch == total_batch_expected:
+            ser_payload.timeout = TIMEOUT_RX
 
         if ser_bytes == b"":
             # Last packet received
@@ -55,7 +57,8 @@ def main():
                     return_val = b"ack\r\n"
                 else:
                     return_val = b"nack\r\n"
-                    time.sleep(TIME_BETWEEN_PACKETS*2)
+
+                time.sleep(TIME_BETWEEN_PACKETS*2)
                 ser_payload.write(return_val)
                 print(f"Sent {return_val}")
 
