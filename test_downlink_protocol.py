@@ -139,6 +139,7 @@ def main():
             if batch_num < len(batches) - 1:
                 print("Wait for ack/nack")
                 ack = ser_downlink.readline()
+                print(ack)
                 if ack == b"nack\r\n" or ack == b"":
                     print("Nack or timeout")
                     is_resend = True
