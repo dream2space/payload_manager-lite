@@ -153,7 +153,7 @@ def main():
 
                 if is_resend:
                     is_resend = False
-                    print(f"Resending = {batch_num}")
+                    print(f"Resending = {batch_num+1}")
             else:
                 break
 
