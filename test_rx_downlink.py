@@ -83,8 +83,7 @@ def main():
         enc_file.close()
 
     os.chmod("decode.sh", 0o777)
-    decode_cmd = "./decode.sh " + "out out"
-    subprocess.call(decode_cmd, stdout=subprocess.DEVNULL, shell=True)
+    subprocess.Popen("./decode.sh out out", shell=True)
     print("Done!")
 
 
