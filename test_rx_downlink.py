@@ -1,8 +1,10 @@
 from ccsds_packet import CCSDS_Packet_Decoder
 from datetime import datetime
 from parameters import *
+import subprocess
 import serial
 import time
+import os
 
 
 def main():
@@ -11,9 +13,7 @@ def main():
     com_port = input("Enter payload transceiver port: ")
     ser_payload = serial.Serial(com_port)
     ser_payload.baudrate = 115200
-    # Cannot set as nonblocking
-    # else send back all bytes at that point
-    ser_payload.timeout = None
+    ser_payload.timeout = None  # Cannot set as nonblocking
 
     start_packet = ser_payload.read(TOTAL_PACKET_LENGTH)
 
@@ -23,11 +23,11 @@ def main():
     total_batch_expected = int.from_bytes(start_packet[10:], 'big')
     print(f"Total batches: {total_batch_expected}")
 
-    recv_bytes = []
+    recv_packets = []
     temp_list = []
     prev_batch_recv = -1
-
     is_ack = True
+
     transfer_start = datetime.now()
     # Receive all batches
     while True:
@@ -38,14 +38,15 @@ def main():
 
         if ser_bytes == b"":
             # Last packet received
+            recv_packets += temp_list  # Append remaining to list
             break
 
         ret = ccsds_decoder.quick_parse(ser_bytes)
 
         if ret['fail'] == True:
             is_ack = False
-        else:
 
+        else:
             if ret['stop'] == False and ret['curr_batch'] != prev_batch_recv:
                 temp_list.append(ser_bytes)
                 print(f"Append - {ret}")
@@ -53,13 +54,14 @@ def main():
 
             elif ret['stop'] == True:
                 # Stop packet received
-                recv_bytes += temp_list
+                recv_packets += temp_list
                 temp_list = []  # Wipe out temp list
 
                 if is_ack:
                     return_val = b"ack\r\n"
                     is_ack = True
                     prev_batch_recv = temp_store
+
                 else:
                     return_val = b"nack\r\n"
                     is_ack = False
@@ -69,9 +71,21 @@ def main():
                 print(f"Sent {return_val}")
                 print()
 
+    print(f"Collected {len(recv_packets)} packets")
     transfer_end = datetime.now()
     elapsed_time = transfer_end - transfer_start
     print(f"Time elapsed: {elapsed_time}")
+
+    # Reassemble packets to image
+    with open(f"{GROUND_STN_MISSION_FOLDER_PATH}/out.gz", "wb") as enc_file:
+        for packet in recv_packets:
+            enc_file.write(ccsds_decoder.parse(packet))
+        enc_file.close()
+
+    os.chmod("decode.sh", 0o777)
+    decode_cmd = "./decode.sh " + "out out"
+    subprocess.call(decode_cmd, stdout=subprocess.DEVNULL, shell=True)
+    print("Done!")
 
 
 if __name__ == "__main__":

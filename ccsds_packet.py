@@ -89,6 +89,7 @@ class CCSDS_Control_Packet(CCSDS_Packet):
 class CCSDS_Chunk_Packet(CCSDS_Packet):
 
     def __init__(self, packet_seq_num, telemetry_packet_type, current_batch_num, current_chunk_num, chunk):
+        self.rsc = RSCodec(16)  # 16 ecc symbols
         self.chunk = chunk
         packet_data = self._create_chunk_packet_data(
             telemetry_packet_type, current_batch_num, current_chunk_num, chunk)
@@ -110,8 +111,7 @@ class CCSDS_Chunk_Packet(CCSDS_Packet):
         data = data + current_batch_num.to_bytes(CURRENT_BATCH_LENGTH, 'big')
         data = data + current_chunk_num.to_bytes(CURRENT_CHUNKS_LENGTH, 'big')
 
-        rsc = RSCodec(16)  # 16 ecc symbols
-        data += rsc.encode(chunk)
+        data += self.rsc.encode(chunk)
 
         return data
 
@@ -130,8 +130,7 @@ class CCSDS_Packet_Decoder():
 
         # Detect if it is Chunk or Stop
         packet_data = CCSDS_Packet[6:]
-        telemetry_packet_type = int.from_bytes(
-            packet_data[0], byteorder='big', signed=False)
+        telemetry_packet_type = packet_data[0]
 
         if telemetry_packet_type == TELEMETRY_PACKET_TYPE_DOWNLINK_PACKET:
             return self._parse_chunk(packet_data)
@@ -156,8 +155,8 @@ class CCSDS_Packet_Decoder():
         return ret_header
 
     def _parse_chunk(self, packet_data):
-        payload = packet_data[13:]
-        return self.rsc.decode(payload)[0]
+        image_payload = packet_data[7:]
+        return self.rsc.decode(image_payload)[0]
 
     def _parse_stop(self):
         return b"stop"
