@@ -67,6 +67,7 @@ def main():
                 time.sleep(TIME_BEFORE_ACK)
                 ser_payload.write(return_val)
                 print(f"Sent {return_val}")
+                print()
 
     transfer_end = datetime.now()
     elapsed_time = transfer_end - transfer_start
