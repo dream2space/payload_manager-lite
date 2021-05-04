@@ -1,6 +1,6 @@
 from ccsds_packet import CCSDS_Packet_Decoder
-from parameters import *
 from datetime import datetime
+from parameters import *
 import serial
 import time
 
@@ -35,14 +35,12 @@ def main():
 
         if prev_batch_recv + 1 == total_batch_expected:
             ser_payload.timeout = TIMEOUT_RX
-            print(ser_bytes)
 
         if ser_bytes == b"":
             # Last packet received
             break
 
         ret = ccsds_decoder.quick_parse(ser_bytes)
-        # print(ret)
 
         if ret['fail'] == True:
             is_ack = False
@@ -52,6 +50,7 @@ def main():
                 temp_list.append(ser_bytes)
                 print(f"Append - {ret}")
                 temp_store = ret['curr_batch']
+
             elif ret['stop'] == True:
                 # Stop packet received
                 recv_bytes += temp_list
