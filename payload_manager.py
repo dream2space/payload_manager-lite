@@ -51,6 +51,8 @@ def main(use_camera, use_downlink):
             read_command = ser_cmd_input.readline().decode("utf-8").replace("\r\n", "")
         except UnicodeDecodeError:
             print("\nUnicode Decode Error\n")
+            # Request for command again from Payload Computer
+            ser_cmd_input.write(b"bcc\r\n")
             continue
 
         print(f"Received: {read_command}")
