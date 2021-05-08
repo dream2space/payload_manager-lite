@@ -71,6 +71,7 @@ def main(use_camera, use_downlink):
 
             # Schedule jobs for each datetime object
             list_datetime = parsed_command.get_mission_datetime()
+            print(f"List of mission: {list_datetime}")
             count = 0
             for dt in list_datetime:
                 count += 1
