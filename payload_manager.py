@@ -56,6 +56,13 @@ def main(use_camera, use_downlink):
         if parsed_command.get_type() == 'md':
             print(parsed_command)
 
+            # Create folder for mission
+            mission_folder_path = parsed_command.get_mission_folder_path()
+            os.mkdir(mission_folder_path)
+            print(f"Mission directory created: {mission_folder_path}")
+
+            # Schedule jobs for each datetime object
+
 
 if __name__ == "__main__":
 

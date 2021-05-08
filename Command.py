@@ -61,3 +61,6 @@ class MissionDownlinkCommand(Command):
         dt = datetime(list_ts[0], list_ts[1],
                       list_ts[2], list_ts[3], list_ts[4], list_ts[5])
         return dt
+
+    def get_mission_folder_path(self):
+        return self.get_mission_folder_path
