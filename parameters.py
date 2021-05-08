@@ -2,6 +2,8 @@
 TEST_FILEPATH = '/home/pi/Desktop/Mission/2021-04-19_09:57:00'
 # TEST_FILEPATH = '/home/pi/Desktop/test'
 
+MISSION_ROOT_FILEPATH = '/home/pi/Desktop/Mission'
+
 GROUND_STN_MISSION_FOLDER_PATH = '/mnt/c/Users/user/Desktop/payload_manager-lite'
 
 #### DOWNLINK CONSTANTS ####

@@ -1,6 +1,7 @@
 from apscheduler.schedulers.background import BackgroundScheduler
-from ccsds_packet import CCSDS_Chunk_Packet, CCSDS_Control_Packet
+from Command_Parser import Command_Parser
 from picamera import PiCamera
+import parameters as param
 import serial
 import sys
 import os
@@ -15,12 +16,45 @@ def main(use_camera, use_downlink):
     camera = PiCamera()
     camera.resolution = (640, 480)
 
+    # Create serial command parser
+    command_parser = Command_Parser()
+
+    # Check if mission folder created
+    if os.path.isdir(param.MISSION_ROOT_FILEPATH) == False:
+        os.makedirs(param.MISSION_ROOT_FILEPATH)
+    else:
+        # Mission folder exists
+        pass
+
     # Open Serial port to receive commands
     # Blocking to wait forever for input
-    ser_cmd_input = serial.Serial('/dev/serial0', baudrate=9600, timeout=None)
+    try:
+        ser_cmd_input = serial.Serial(
+            '/dev/serial0', baudrate=9600, timeout=None)
+    except serial.SerialException:
+        print(f"Serial Port Exception - Cannot open {'/dev/serial0'}")
+        sys.exit()
 
     # Open Serial port to downlink images
-    ser_downlink = serial.Serial("/dev/ttyUSB0", baudrate=115200, timeout=10)
+    try:
+        ser_downlink = serial.Serial(
+            "/dev/ttyUSB0", baudrate=115200, timeout=10)
+    except serial.SerialException:
+        print(f"Serial Port Exception - Cannot open {'/dev/ttyUSB0'}")
+        sys.exit()
+
+    # Read payload command from serial
+    while True:
+        print("Waiting for commands...")
+        read_command = ser_cmd_input.readline().decode("utf-8").replace("\r\n", "")
+        print(f"Received: {read_command}")
+
+        # Parse read command into Command object
+        parsed_command = command_parser.parse(read_command)
+
+        # Mission + Downlink command
+        if parsed_command.get_type() == 'md':
+            print(parsed_command)
 
 
 if __name__ == "__main__":
