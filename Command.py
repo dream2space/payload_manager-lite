@@ -67,3 +67,6 @@ class MissionDownlinkCommand(Command):
 
     def get_mission_datetime(self):
         return self.list_mission_datetime
+
+    def get_down_timestamp(self):
+        return self.down_timestamp

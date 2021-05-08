@@ -1,4 +1,5 @@
 from apscheduler.schedulers.background import BackgroundScheduler
+from Downlink_Util import execute_downlink
 from Command_Parser import Command_Parser
 from Mission_Util import execute_mission
 from picamera import PiCamera
@@ -27,8 +28,7 @@ def main(use_camera, use_downlink):
         # Mission folder exists
         pass
 
-    # Open Serial port to receive commands
-    # Blocking to wait forever for input
+    # Open Serial port to receive commands - Blocking to wait forever for input
     try:
         ser_cmd_input = serial.Serial(
             '/dev/serial0', baudrate=9600, timeout=None)
@@ -53,10 +53,9 @@ def main(use_camera, use_downlink):
             print("\nUnicode Decode Error\n")
             # Request for command again from Payload Computer
             ser_cmd_input.write(b"bcc\r\n")
-            continue
+            continue  # To re-read command from serial
 
         print(f"Received: {read_command}")
-
         # Parse read command into Command object
         parsed_command = command_parser.parse(read_command)
 
@@ -79,6 +78,9 @@ def main(use_camera, use_downlink):
                                   camera, mission_folder_path, dt, count])
 
             # Schedule job for downlink
+            down_timestamp = parsed_command.get_down_timestamp()
+            scheduler.add_job(execute_downlink, next_run_time=down_timestamp, args=[
+                ser_downlink, mission_folder_path])
 
 
 if __name__ == "__main__":
