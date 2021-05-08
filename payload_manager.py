@@ -44,43 +44,57 @@ def main(use_camera, use_downlink):
         print(f"Serial Port Exception - Cannot open {'/dev/ttyUSB0'}")
         sys.exit()
 
-    # Read payload command from serial
-    while True:
-        print("Waiting for commands...")
-        try:
-            read_command = ser_cmd_input.readline().decode("utf-8").replace("\r\n", "")
-        except UnicodeDecodeError:
-            print("\nUnicode Decode Error\n")
-            # Request for command again from Payload Computer
-            ser_cmd_input.write(b"bcc\r\n")
-            continue  # To re-read command from serial
+    try:
 
-        print(f"Received: {read_command}")
-        # Parse read command into Command object
-        parsed_command = command_parser.parse(read_command)
+        # Read payload command from serial
+        while True:
+            print("Waiting for commands...")
+            try:
+                read_command = ser_cmd_input.readline().decode("utf-8").replace("\r\n", "")
+            except UnicodeDecodeError:
+                print("\nUnicode Decode Error\n")
+                # Request for command again from Payload Computer
+                ser_cmd_input.write(b"bcc\r\n")
+                continue  # To re-read command from serial
 
-        # Mission + Downlink command
-        if parsed_command.get_type() == 'md':
-            print(parsed_command)
+            print(f"Received: {read_command}")
+            # Parse read command into Command object
+            parsed_command = command_parser.parse(read_command)
 
-            # Create folder for mission
-            mission_folder_path = parsed_command.get_mission_folder_path()
-            os.mkdir(mission_folder_path)
-            print(f"Mission directory created: {mission_folder_path}")
+            # Mission + Downlink command
+            if parsed_command.get_type() == 'md':
+                print(parsed_command)
 
-            # Schedule jobs for each datetime object
-            list_datetime = parsed_command.get_mission_datetime()
-            print(f"List of mission: {list_datetime}")
-            count = 0
-            for dt in list_datetime:
-                count += 1
-                scheduler.add_job(execute_mission, run_date=dt, args=[
-                                  camera, mission_folder_path, dt, count])
+                # Create folder for mission
+                mission_folder_path = parsed_command.get_mission_folder_path()
+                os.mkdir(mission_folder_path)
+                print(f"Mission directory created: {mission_folder_path}")
 
-            # Schedule job for downlink
-            down_timestamp = parsed_command.get_down_timestamp()
-            scheduler.add_job(execute_downlink, next_run_time=down_timestamp, args=[
-                ser_downlink, mission_folder_path])
+                # Schedule jobs for each datetime object
+                list_datetime = parsed_command.get_mission_datetime()
+                print(f"List of mission: {list_datetime}")
+                count = 0
+                for dt in list_datetime:
+                    count += 1
+                    scheduler.add_job(execute_mission, run_date=dt, args=[
+                        camera, mission_folder_path, dt, count])
+
+                # Schedule job for downlink
+                down_timestamp = parsed_command.get_down_timestamp()
+                scheduler.add_job(execute_downlink, next_run_time=down_timestamp, args=[
+                    ser_downlink, mission_folder_path])
+
+    except KeyboardInterrupt:
+        scheduler.shutdown()
+        camera.close()
+        print("End, exiting")
+        sys.exit(0)
+
+    # Fall through exception -- just in case
+    except Exception as ex:
+        template = "An exception of type {0} occurred. Arguments:\n{1!r}"
+        message = template.format(type(ex).__name__, ex.args)
+        print(message)
 
 
 if __name__ == "__main__":
