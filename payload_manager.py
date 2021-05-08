@@ -90,11 +90,11 @@ def main(use_camera, use_downlink):
         print("End, exiting")
         sys.exit(0)
 
-    # Fall through exception -- just in case
-    except Exception as ex:
-        template = "An exception of type {0} occurred. Arguments:\n{1!r}"
-        message = template.format(type(ex).__name__, ex.args)
-        print(message)
+    # # Fall through exception -- just in case
+    # except Exception as ex:
+    #     template = "An exception of type {0} occurred. Arguments:\n{1!r}"
+    #     message = template.format(type(ex).__name__, ex.args)
+    #     print(message)
 
 
 if __name__ == "__main__":
