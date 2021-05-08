@@ -64,3 +64,6 @@ class MissionDownlinkCommand(Command):
 
     def get_mission_folder_path(self):
         return self.get_mission_folder_path
+
+    def get_mission_datetime(self):
+        return self.list_mission_datetime

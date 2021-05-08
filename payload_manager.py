@@ -1,5 +1,6 @@
 from apscheduler.schedulers.background import BackgroundScheduler
 from Command_Parser import Command_Parser
+from Mission_Util import execute_mission
 from picamera import PiCamera
 import parameters as param
 import serial
@@ -62,10 +63,17 @@ def main(use_camera, use_downlink):
             print(f"Mission directory created: {mission_folder_path}")
 
             # Schedule jobs for each datetime object
+            list_datetime = parsed_command.get_mission_datetime()
+            count = 0
+            for dt in list_datetime:
+                count += 1
+                scheduler.add_job(execute_mission, run_date=dt, args=[
+                                  camera, mission_folder_path, dt, count])
+
+            # Schedule job for downlink
 
 
 if __name__ == "__main__":
-
     use_camera = True
     use_downlink = True
 
