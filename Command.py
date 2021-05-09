@@ -2,7 +2,6 @@ from Mission_Parameters import MISSION_ROOT_FILEPATH
 from datetime import datetime, timedelta
 
 
-
 class Command():
     def __init__(self, mission_type):
         self.mission_type = mission_type
@@ -14,9 +13,9 @@ class Command():
         return self.mission_type
 
 
-class MissionDownlinkCommand(Command):
+class MissionDownlinkCommand():
     def __init__(self, mission_type, num_images, interval, start_timestamp, down_timestamp):
-        Command.__init__(mission_type)
+        self.mission_type = mission_type
         self.num_images = int(num_images)
         self.interval = int(interval)
         self.start_timestamp = self._process_timestamp(start_timestamp)
