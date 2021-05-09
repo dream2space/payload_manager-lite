@@ -1,4 +1,4 @@
-from ccsds_packet import CCSDS_Chunk_Packet, CCSDS_Control_Packet
+from CCSDS_Packet import CCSDS_Chunk_Packet, CCSDS_Control_Packet
 from parameters import *
 import subprocess
 import serial
