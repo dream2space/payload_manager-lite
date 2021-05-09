@@ -1,5 +1,5 @@
 from CCSDS_Packet import CCSDS_Chunk_Packet, CCSDS_Control_Packet
-from parameters import *
+from Mission_Parameters import *
 import subprocess
 import serial
 import pprint

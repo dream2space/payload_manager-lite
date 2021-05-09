@@ -2,8 +2,8 @@ from apscheduler.schedulers.background import BackgroundScheduler
 from Downlink_Util import execute_downlink
 from Command_Parser import Command_Parser
 from Mission_Util import execute_mission
+import Mission_Parameters as param
 from picamera import PiCamera
-import parameters as param
 import serial
 import sys
 import os

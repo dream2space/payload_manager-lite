@@ -1,5 +1,6 @@
+from Mission_Parameters import *
 from reedsolo import RSCodec
-from parameters import *
+
 
 #### DOWNLINK CONSTANTS ####
 BATCH_SIZE = 5

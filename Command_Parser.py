@@ -1,5 +1,4 @@
 from Command import Command, MissionDownlinkCommand
-from os import read
 
 
 class Command_Parser():

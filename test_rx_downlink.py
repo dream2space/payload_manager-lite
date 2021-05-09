@@ -1,6 +1,6 @@
-from ccsds_packet import CCSDS_Packet_Decoder
+from CCSDS_Packet import CCSDS_Packet_Decoder
+from Mission_Parameters import *
 from datetime import datetime
-from parameters import *
 import subprocess
 import serial
 import time
