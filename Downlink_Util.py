@@ -2,6 +2,7 @@ from ccsds_packet import CCSDS_Chunk_Packet, CCSDS_Control_Packet
 from parameters import *
 import subprocess
 import pprint
+import time
 import os
 
 
@@ -104,4 +105,65 @@ def execute_downlink(ser_downlink, mission_folder_path):
 
     # Handle downlink of each image via filepath
     for filepath in filepath_list:
-        pass
+
+        # Prepare encoded image bytes
+        enc_img_bytes = extract_enc_img_bytes(filepath)
+
+        # Prepare tx batches
+        batches = prepare_tx_batch(enc_img_bytes)
+        print(f"Number of batches: {len(batches)}")
+
+        # Send CCSDS Start Packet
+        start_packet = CCSDS_Control_Packet(
+            0, TELEMETRY_PACKET_TYPE_DOWNLINK_START, len(enc_img_bytes), len(batches))
+        ser_downlink.write(start_packet.get_tx_packet())
+        time.sleep(TIME_SLEEP_AFTER_START)
+
+        # Start sending downlink packets
+        is_resend = False
+        batch_num = 0
+        while batch_num < len(batches):
+
+            batch = batches[batch_num]
+            packet_count = 1
+            for i in range(len(batch)):
+                packet = batch[i]
+
+                # Do batch send - 5 packets then a stop packet
+                if isinstance(packet, CCSDS_Chunk_Packet):
+                    print(
+                        f"Sending: packet {packet_count} from batch {batch_num+1}")
+
+                elif isinstance(packet, CCSDS_Control_Packet):
+                    print(f"Sending: Stop packet from batch {batch_num+1}")
+                    print(packet)
+
+                packet_count += 1
+                ser_downlink.write(packet.get_tx_packet())
+
+            if batch_num < len(batches) - 1:
+                print("Wait for ack/nack")
+                ack = ser_downlink.readline()
+                print(ack)
+
+                if ack == b"nack\r\n" or ack == b"":
+                    print("Nack or timeout")
+                    is_resend = True
+                    ser_downlink.flush()
+
+                else:
+                    print(f"Received {ack}")
+                    batch_num += 1
+                print()
+                time.sleep(TIME_BETWEEN_PACKETS * 5)
+
+                if is_resend:
+                    is_resend = False
+                    print(f"Resending = {batch_num+1}")
+
+            else:
+                # Sleep first before sending start
+                time.sleep(TIME_SLEEP_AFTER_START)
+                break
+
+    print("done!")
