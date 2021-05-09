@@ -10,9 +10,9 @@ class Command_Parser():
 
         if "md" in list_read:
             mission_type = list_read[0]
-            num = list_read[1]
-            interval = list_read[2]
-            start_timestamp = list_read[3]
+            start_timestamp = list_read[1]
+            num = list_read[2]
+            interval = list_read[3]
             down_timestamp = list_read[4]
             parsed_command = MissionDownlinkCommand(
                 mission_type, num, interval, start_timestamp, down_timestamp)
