@@ -56,6 +56,7 @@ def main():
                 # Stop packet received
                 recv_packets += temp_list
                 temp_list = []  # Wipe out temp list
+                print(ret)
 
                 if is_ack:
                     return_val = b"ack\r\n"
