@@ -70,3 +70,6 @@ class MissionDownlinkCommand():
 
     def get_down_timestamp(self):
         return self.down_timestamp
+
+    def get_type(self):
+        return self.mission_type
