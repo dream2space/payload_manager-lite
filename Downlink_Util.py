@@ -141,7 +141,7 @@ def execute_downlink(ser_downlink, mission_folder_path):
                 packet_count += 1
                 ser_downlink.write(packet.get_tx_packet())
 
-            if batch_num < len(batches) - 1:
+            if batch_num + 1 < len(batches):
                 print("Wait for ack/nack")
                 ack = ser_downlink.readline()
                 print(ack)
