@@ -16,6 +16,7 @@ def main():
     ser_payload.timeout = None  # Cannot set as nonblocking
 
     start_packet = ser_payload.read(TOTAL_PACKET_LENGTH)
+    ser_payload.timeout = TIMEOUT_RX
 
     # Extract out useful data from padded packet
     start_packet = start_packet[:13]
@@ -37,10 +38,6 @@ def main():
         ser_bytes = ser_payload.read(TOTAL_PACKET_LENGTH)
 
         # ---------------------------------------------------------------
-
-        # Allow timeout for batch after last
-        if prev_batch_recv + 1 == total_batch_expected:
-            ser_payload.timeout = TIMEOUT_RX
 
         # Exit loop after final batch
         if ser_bytes == b"":
@@ -77,7 +74,6 @@ def main():
         # Send ack
         else:
             return_val = b"ack\r\n"
-            prev_batch_recv = ret['curr_batch']
 
         time.sleep(TIME_BEFORE_ACK)
         ser_payload.write(return_val)
