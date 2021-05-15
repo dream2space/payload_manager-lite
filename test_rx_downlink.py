@@ -16,7 +16,6 @@ def main():
     ser_payload.timeout = None  # Cannot set as nonblocking
 
     start_packet = ser_payload.read(TOTAL_PACKET_LENGTH)
-    ser_payload.timeout = TIMEOUT_RX
 
     # Extract out useful data from padded packet
     start_packet = start_packet[:13]
@@ -26,7 +25,6 @@ def main():
 
     recv_packets = []
     # temp_list = []
-    prev_batch_recv = -1
     is_packet_failed = False
 
     transfer_start = datetime.now()
@@ -44,6 +42,9 @@ def main():
             break
 
         ret = ccsds_decoder.quick_parse(ser_bytes)
+
+        if ret['curr_batch'] == total_batch_expected:
+            ser_payload.timeout = TIMEOUT_RX
 
         # ---------------------------------------------------------------
         # Decoding packet
