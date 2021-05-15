@@ -71,10 +71,10 @@ def prepare_tx_batch(enc_img_bytes):
     # Create CCSDS Packets
     packet_batch_list = []
     packet_seq_num = 1
+    chunk_num = 1
     for batch_num in range(len(batch_list)):
         batch = batch_list[batch_num]
 
-        chunk_num = 1
         new_batch = []
         for chunk in batch:
             # Create CCSDS Packet for each chunk
@@ -147,7 +147,7 @@ def execute_downlink(ser_downlink, mission_folder_path):
                     print(f"Received {ack}")
                     batch_num += 1
                 print()
-                time.sleep(TIME_BETWEEN_PACKETS * 5)
+                time.sleep(TIME_BETWEEN_PACKETS)
 
                 if is_resend:
                     is_resend = False
