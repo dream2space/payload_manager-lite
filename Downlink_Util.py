@@ -140,6 +140,7 @@ def execute_downlink(ser_downlink, mission_folder_path):
                 if ack == b"nack\r\n" or ack == b"":
                     print("Nack or timeout")
                     is_resend = True
+                    time.sleep(1)
                     ser_downlink.flush()
 
                 else:
