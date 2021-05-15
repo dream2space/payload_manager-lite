@@ -37,13 +37,15 @@ def main():
 
         # ---------------------------------------------------------------
 
+        print(ser_bytes)
+
         # Exit loop after final batch
         if ser_bytes == b"" and len(recv_packets) == total_batch_expected:
             break
 
         elif ser_bytes == b"" and len(recv_packets) < total_batch_expected:
             # resend n/ack
-            ser_payload.write(return_val)
+            return_val = b"nack\r\n"
 
         ret = ccsds_decoder.quick_parse(ser_bytes)
 
@@ -63,12 +65,12 @@ def main():
         else:
 
             # If packet is a resend
-            if ret['curr_chunk'] == prev_success_packet_num:
+            if ret['curr_batch'] == prev_success_packet_num:
                 is_packet_failed = False
 
             # If new packet
             else:
-                prev_success_packet_num = ret['curr_chunk']
+                prev_success_packet_num = ret['curr_batch']
 
                 # Append received packet to list
                 recv_packets.append(ser_bytes)
