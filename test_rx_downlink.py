@@ -37,8 +37,6 @@ def main():
 
         # ---------------------------------------------------------------
 
-        print(ser_bytes)
-
         # Exit loop after final batch
         if ser_bytes == b"" and len(recv_packets) == total_batch_expected:
             break
@@ -49,7 +47,7 @@ def main():
 
         ret = ccsds_decoder.quick_parse(ser_bytes)
 
-        if ret['curr_batch'] == total_batch_expected:
+        if ret['curr_batch'] + 1 == total_batch_expected:
             ser_payload.timeout = TIMEOUT_RX
 
         # ---------------------------------------------------------------
