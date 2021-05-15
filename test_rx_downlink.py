@@ -13,7 +13,7 @@ def main():
     com_port = input("Enter payload transceiver port: ")
     ser_payload = serial.Serial(com_port)
     ser_payload.baudrate = 115200
-    ser_payload.timeout = None  # Cannot set as nonblocking
+    ser_payload.timeout = TIME_SLEEP_AFTER_START - 0.5  # Cannot set as nonblocking
 
     start_packet = ser_payload.read(TOTAL_PACKET_LENGTH)
 
@@ -37,18 +37,14 @@ def main():
 
         # ---------------------------------------------------------------
 
-        # Exit loop after final batch
-        if ser_bytes == b"" and len(recv_packets) == total_batch_expected:
-            break
-
-        elif ser_bytes == b"" and len(recv_packets) < total_batch_expected:
+        if ser_bytes == b"" and len(recv_packets) < total_batch_expected:
             # resend n/ack
             return_val = b"nack\r\n"
 
         ret = ccsds_decoder.quick_parse(ser_bytes)
 
         if ret['curr_batch'] == total_batch_expected:
-            ser_payload.timeout = TIMEOUT_RX
+            break
 
         # ---------------------------------------------------------------
         # Decoding packet
