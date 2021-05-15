@@ -147,7 +147,7 @@ def execute_downlink(ser_downlink, mission_folder_path):
                     print(f"Received {ack}")
                     batch_num += 1
                 print()
-                time.sleep(TIME_BETWEEN_PACKETS)
+                time.sleep(TIME_BETWEEN_PACKETS * 5)
 
                 if is_resend:
                     is_resend = False
