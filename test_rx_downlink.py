@@ -48,7 +48,7 @@ def main():
 
         ret = ccsds_decoder.quick_parse(ser_bytes)
 
-        if ret['curr_batch'] == total_batch_expected:
+        if ret['curr_batch']+1 == total_batch_expected:
             print(f"last packet - {ret['curr_batch']}")
             is_last_packet = True
             # ser_payload.timeout = TIMEOUT_RX
