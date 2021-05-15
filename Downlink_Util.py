@@ -84,14 +84,7 @@ def prepare_tx_batch(enc_img_bytes):
             packet_seq_num += 1
             chunk_num += 1
 
-        # Put stop packet at all batches but not the last batch
-        # if batch_num != len(batch_list)-1:
-        # stop_packet = CCSDS_Control_Packet(
-        #     packet_seq_num, TELEMETRY_PACKET_TYPE_DOWNLINK_STOP, 0, 0)
-        # new_batch.append(stop_packet)
-        # packet_seq_num += 1
-
-        # packet_batch_list.append(new_batch)
+        packet_batch_list.append(new_batch)
 
     return packet_batch_list
 
