@@ -85,8 +85,6 @@ def prepare_tx_batch(enc_img_bytes):
             chunk_num += 1
 
         packet_batch_list.append(new_batch)
-
-    print(f"Packets in batch list - {packet_batch_list}")
     return packet_batch_list
 
 
