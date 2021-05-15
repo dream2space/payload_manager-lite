@@ -24,53 +24,65 @@ def main():
     print(f"Total batches: {total_batch_expected}")
 
     recv_packets = []
-    temp_list = []
+    # temp_list = []
     prev_batch_recv = -1
-    is_ack = True
+    is_packet_failed = False
 
     transfer_start = datetime.now()
     # Receive all batches
     while True:
+
+        # ---------------------------------------------------------------
+
         ser_bytes = ser_payload.read(TOTAL_PACKET_LENGTH)
 
+        # ---------------------------------------------------------------
+
+        # Allow timeout for batch after last
         if prev_batch_recv + 1 == total_batch_expected:
             ser_payload.timeout = TIMEOUT_RX
 
+        # Exit loop after final batch
         if ser_bytes == b"":
-            # Last packet received
-            recv_packets += temp_list  # Append remaining to list
             break
 
         ret = ccsds_decoder.quick_parse(ser_bytes)
 
+        # ---------------------------------------------------------------
+        # Decoding packet
+        # ---------------------------------------------------------------
+
+        # Failed to receive current packet
         if ret['fail'] == True:
-            is_ack = False
+            print(ret)
+            is_packet_failed = True
 
+        # Successfully received current packet
         else:
-            if ret['stop'] == False and ret['curr_batch'] != prev_batch_recv:
-                temp_list.append(ser_bytes)
-                print(f"Append - {ret}")
-                temp_store = ret['curr_batch']
+            # Append received packet to list
+            recv_packets.append(ser_bytes)
+            print(f"Append - {ret}")
 
-            elif ret['stop'] == True:
-                # Stop packet received
-                recv_packets += temp_list
-                temp_list = []  # Wipe out temp list
-                print(ret)
+            # Flag to indicate successfully received packet
+            is_packet_failed = False
 
-                if is_ack:
-                    return_val = b"ack\r\n"
-                    is_ack = True
-                    prev_batch_recv = temp_store
+        # ---------------------------------------------------------------
+        # Handle Ack/Nack
+        # ---------------------------------------------------------------
 
-                else:
-                    return_val = b"nack\r\n"
-                    is_ack = False
+        # Send nack
+        if is_packet_failed:
+            return_val = b"nack\r\n"
 
-                time.sleep(TIME_BEFORE_ACK)
-                ser_payload.write(return_val)
-                print(f"Sent {return_val}")
-                print()
+        # Send ack
+        else:
+            return_val = b"ack\r\n"
+            prev_batch_recv = ret['curr_batch']
+
+        time.sleep(TIME_BEFORE_ACK)
+        ser_payload.write(return_val)
+        print(f"Sent {return_val}")
+        print()
 
     print(f"Collected {len(recv_packets)} packets")
     transfer_end = datetime.now()

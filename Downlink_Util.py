@@ -86,12 +86,12 @@ def prepare_tx_batch(enc_img_bytes):
 
         # Put stop packet at all batches but not the last batch
         # if batch_num != len(batch_list)-1:
-        stop_packet = CCSDS_Control_Packet(
-            packet_seq_num, TELEMETRY_PACKET_TYPE_DOWNLINK_STOP, 0, 0)
-        new_batch.append(stop_packet)
-        packet_seq_num += 1
+        # stop_packet = CCSDS_Control_Packet(
+        #     packet_seq_num, TELEMETRY_PACKET_TYPE_DOWNLINK_STOP, 0, 0)
+        # new_batch.append(stop_packet)
+        # packet_seq_num += 1
 
-        packet_batch_list.append(new_batch)
+        # packet_batch_list.append(new_batch)
 
     return packet_batch_list
 
@@ -129,14 +129,13 @@ def execute_downlink(ser_downlink, mission_folder_path):
             for i in range(len(batch)):
                 packet = batch[i]
 
-                # Do batch send - 5 packets then a stop packet
                 if isinstance(packet, CCSDS_Chunk_Packet):
                     print(
                         f"Sending: packet {packet_count} from batch {batch_num+1}")
 
-                elif isinstance(packet, CCSDS_Control_Packet):
-                    print(f"Sending: Stop packet from batch {batch_num+1}")
-                    print(packet)
+                # elif isinstance(packet, CCSDS_Control_Packet):
+                #     print(f"Sending: Stop packet from batch {batch_num+1}")
+                #     print(packet)
 
                 packet_count += 1
                 ser_downlink.write(packet.get_tx_packet())

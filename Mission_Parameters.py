@@ -7,7 +7,8 @@ MISSION_ROOT_FILEPATH = '/home/pi/Desktop/Mission'
 GROUND_STN_MISSION_FOLDER_PATH = '/mnt/c/Users/user/Desktop/payload_manager-lite'
 
 #### DOWNLINK CONSTANTS ####
-BATCH_SIZE = 5
+# BATCH_SIZE = 5
+BATCH_SIZE = 1
 PRE_ENC_CHUNK_SIZE = 120  # bytes, w/o 16 bytes rs encoding yet
 TELEMETRY_PACKET_TYPE_DOWNLINK_START = 30
 TELEMETRY_PACKET_TYPE_DOWNLINK_PACKET = 31
