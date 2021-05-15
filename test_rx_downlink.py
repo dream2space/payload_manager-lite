@@ -22,10 +22,10 @@ def main():
 
     total_batch_expected = int.from_bytes(start_packet[10:], 'big')
     print(f"Total batches: {total_batch_expected}")
-    ser_payload.timeout = TIME_SLEEP_AFTER_START - 0.3
 
     recv_packets = []
     is_packet_failed = False
+    is_last_packet = False
     prev_success_packet_num = 0
 
     # Receive all batches
@@ -38,14 +38,20 @@ def main():
 
         # ---------------------------------------------------------------
 
-        if ser_bytes == b"" and len(recv_packets) < total_batch_expected:
+        # Exit loop after final batch
+        if ser_bytes == b"" and len(recv_packets) == total_batch_expected:
+            break
+
+        elif ser_bytes == b"" and len(recv_packets) < total_batch_expected:
             # resend n/ack
             return_val = b"nack\r\n"
 
         ret = ccsds_decoder.quick_parse(ser_bytes)
 
         if ret['curr_batch'] == total_batch_expected:
-            break
+            print(f"last packet - {ret['curr_batch']}")
+            is_last_packet = True
+            # ser_payload.timeout = TIMEOUT_RX
 
         # ---------------------------------------------------------------
         # Decoding packet
@@ -90,6 +96,9 @@ def main():
         ser_payload.write(return_val)
         print(f"Sent {return_val}")
         print()
+
+        if is_last_packet == True:
+            break
 
     print(f"Collected {len(recv_packets)} packets")
     transfer_end = datetime.now()
