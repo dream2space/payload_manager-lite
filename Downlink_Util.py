@@ -155,7 +155,7 @@ def execute_downlink(ser_downlink, mission_folder_path):
 
             else:
                 # Sleep first before sending start
-                time.sleep(TIME_SLEEP_AFTER_START)
+                time.sleep(TIME_BETWEEN_IMAGES_PAYLOAD)
                 break
 
     print("done!")

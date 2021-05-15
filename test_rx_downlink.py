@@ -1,9 +1,11 @@
 from CCSDS_Packet import CCSDS_Packet_Decoder
+from reedsolo import ReedSolomonError
 from Mission_Parameters import *
 from datetime import datetime
 import subprocess
 import serial
 import time
+import sys
 import os
 
 
@@ -108,7 +110,11 @@ def main():
     # Reassemble packets to image
     with open(f"{GROUND_STN_MISSION_FOLDER_PATH}/out.gz", "wb") as enc_file:
         for packet in recv_packets:
-            enc_file.write(ccsds_decoder.parse(packet))
+            try:
+                enc_file.write(ccsds_decoder.parse(packet))
+            except ReedSolomonError:
+                print("Failed to decode as too many errors in packet")
+                sys.exit()
         enc_file.close()
 
     os.chmod("decode.sh", 0o777)
