@@ -1,12 +1,15 @@
-from apscheduler.schedulers.background import BackgroundScheduler
-from Downlink_Util import execute_downlink
-from Command_Parser import Command_Parser
-from Mission_Util import execute_mission
-import Mission_Parameters as param
-from picamera import PiCamera
-import serial
-import sys
 import os
+import sys
+import time
+
+import serial
+from apscheduler.schedulers.background import BackgroundScheduler
+from picamera import PiCamera
+
+import Mission_Parameters as param
+from Command_Parser import Command_Parser
+from Downlink_Util import execute_downlink
+from Mission_Util import execute_mission
 
 
 def main(use_camera, use_downlink):
@@ -53,6 +56,7 @@ def main(use_camera, use_downlink):
                 read_command = ser_cmd_input.readline().decode("utf-8").replace("\r\n", "")
             except UnicodeDecodeError:
                 print("\nUnicode Decode Error\n")
+                time.sleep(1)
                 # Request for command again from Payload Computer
                 ser_cmd_input.write(b"bcc\r\n")
                 continue  # To re-read command from serial
