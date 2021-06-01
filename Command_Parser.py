@@ -1,3 +1,5 @@
+from os import read
+
 from Command import Command, MissionDownlinkCommand
 
 
@@ -6,6 +8,11 @@ class Command_Parser():
         pass
 
     def parse(self, read_command):
+
+        # If empty command
+        if len(read_command) == 0:
+            return Command("blank")
+
         list_read = read_command.split(' ')
 
         if "md" in list_read:

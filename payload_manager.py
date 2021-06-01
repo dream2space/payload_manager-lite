@@ -95,6 +95,17 @@ def main(use_camera, use_downlink):
                 scheduler.add_job(execute_downlink, next_run_time=down_timestamp, args=[
                     ser_downlink, mission_folder_path])
 
+            # Request again if command is unknown
+            elif parsed_command.get_type() == 'unknown':
+                time.sleep(1)
+                # Request for command again from Payload Computer
+                ser_cmd_input.write(b"bcc\r\n")
+                continue  # To re-read command from serial
+
+            # ignore blank command
+            elif parsed_command.get_type() == 'blank':
+                continue
+
     except KeyboardInterrupt:
         scheduler.shutdown()
         camera.close()
