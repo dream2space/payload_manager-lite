@@ -68,6 +68,10 @@ def main(use_camera, use_downlink):
                 ser_cmd_input.write(b"bcc\r\n")
                 continue  # To re-read command from serial
 
+            # Skip blank commands
+            if read_command == b"":
+                continue
+
             print(f"Received: {read_command}")
             # Parse read command into Command object
             parsed_command = command_parser.parse(read_command)
@@ -94,6 +98,14 @@ def main(use_camera, use_downlink):
                 down_timestamp = parsed_command.get_down_timestamp()
                 scheduler.add_job(execute_downlink, next_run_time=down_timestamp, args=[
                     ser_downlink, mission_folder_path])
+
+            # TODO: Refine this part
+            # Try to request for command again
+            else:
+                time.sleep(1)
+                # Request for command again from Payload Computer
+                ser_cmd_input.write(b"bcc\r\n")
+                continue  # To re-read command from serial
 
     except KeyboardInterrupt:
         scheduler.shutdown()
