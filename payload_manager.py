@@ -68,7 +68,7 @@ def main(use_camera, use_downlink):
                 ser_cmd_input.write(b"bcc\r\n")
                 continue  # To re-read command from serial
 
-            print(f"Received: aa{read_command}aa")
+            print(f"Received: {read_command}")
             # Parse read command into Command object
             parsed_command = command_parser.parse(read_command)
 
