@@ -1,9 +1,10 @@
+import os
+import pprint
+import subprocess
+import time
+
 from CCSDS_Packet import CCSDS_Chunk_Packet, CCSDS_Control_Packet
 from Mission_Parameters import *
-import subprocess
-import pprint
-import time
-import os
 
 
 # Given mission folder path, obtain list of images path
@@ -95,6 +96,9 @@ def execute_downlink(ser_downlink, mission_folder_path):
     print("Downlink images:")
     pprint.pprint(filepath_list)  # Print list of files for debug
 
+    # Timeout count
+    timeout_count = 0
+
     # Handle downlink of each image via filepath
     for filepath in filepath_list:
 
@@ -140,6 +144,7 @@ def execute_downlink(ser_downlink, mission_folder_path):
                 if ack == b"nack\r\n" or ack == b"":
                     print("Nack or timeout")
                     is_resend = True
+                    timeout_count += 1
                     time.sleep(1)
                     ser_downlink.flush()
 
@@ -157,5 +162,9 @@ def execute_downlink(ser_downlink, mission_folder_path):
                 # Sleep first before sending start
                 time.sleep(TIME_BETWEEN_IMAGES_PAYLOAD)
                 break
+
+            if timeout_count > 5:
+                print("Timeout! Abort downlink!")
+                return
 
     print("done!")
