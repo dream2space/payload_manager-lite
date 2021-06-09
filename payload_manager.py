@@ -48,10 +48,9 @@ def main(use_camera, use_downlink):
         sys.exit()
 
     try:
-
+        print("Waiting for commands...")
         # Read payload command from serial
         while True:
-            print("\n\nWaiting for commands...")
             try:
                 read_command = ser_cmd_input.readline().decode("utf-8").replace('\r', '').replace('\n', '')
             except UnicodeDecodeError:
@@ -105,6 +104,8 @@ def main(use_camera, use_downlink):
             # ignore blank command
             elif parsed_command.get_type() == 'blank':
                 continue
+
+            print("\n\nWaiting for commands...")
 
     except KeyboardInterrupt:
         scheduler.shutdown()
