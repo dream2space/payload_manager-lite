@@ -165,6 +165,7 @@ def execute_downlink(ser_downlink, mission_folder_path):
 
             if timeout_count > 5:
                 print("Timeout! Abort downlink!")
+                print("\n\nWaiting for commands...")
                 return
 
     print("done!")
