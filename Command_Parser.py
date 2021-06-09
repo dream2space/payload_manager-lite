@@ -9,6 +9,8 @@ class Command_Parser():
 
     def parse(self, read_command):
 
+        print(f"read command is {read_command}")
+
         # If empty command
         if len(read_command) == 0:
             return Command("blank")
