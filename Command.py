@@ -16,11 +16,15 @@ class Command():
 
 class MissionDownlinkCommand():
     def __init__(self, mission_type, num_images, interval, start_timestamp, down_timestamp):
-        self.mission_type = mission_type
-        self.num_images = int(num_images)
-        self.interval = int(interval)
-        self.start_timestamp = self._process_timestamp(start_timestamp)
-        self.down_timestamp = self._process_timestamp(down_timestamp)
+
+        try:
+            self.mission_type = mission_type
+            self.num_images = int(num_images)
+            self.interval = int(interval)
+            self.start_timestamp = self._process_timestamp(start_timestamp)
+            self.down_timestamp = self._process_timestamp(down_timestamp)
+        except ValueError:
+            raise ValueError("Bad command received")
 
         # Generate list of images filepath created from this mission
         self.list_mission_datetime = self._generate_mission_images_datetime(
@@ -57,7 +61,11 @@ class MissionDownlinkCommand():
             list_ts.append(i)
         for i in chop_timestamp[1].split(':'):
             list_ts.append(i)
-        list_ts = [int(y) for y in list_ts]
+
+        try:
+            list_ts = [int(y) for y in list_ts]
+        except ValueError:
+            raise ValueError("Bad command received!")
 
         dt = datetime(list_ts[0], list_ts[1],
                       list_ts[2], list_ts[3], list_ts[4], list_ts[5])

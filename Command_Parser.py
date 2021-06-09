@@ -24,8 +24,12 @@ class Command_Parser():
             num = list_read[2]
             interval = list_read[3]
             down_timestamp = list_read[4]
-            parsed_command = MissionDownlinkCommand(
-                mission_type, num, interval, start_timestamp, down_timestamp)
+
+            try:
+                parsed_command = MissionDownlinkCommand(
+                    mission_type, num, interval, start_timestamp, down_timestamp)
+            except ValueError:
+                parsed_command = Command("unknown")
 
         else:
             parsed_command = Command("unknown")
