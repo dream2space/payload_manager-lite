@@ -51,7 +51,7 @@ def main(use_camera, use_downlink):
 
         # Read payload command from serial
         while True:
-            print("Waiting for commands...")
+            print("\n\nWaiting for commands...")
             try:
                 read_command = ser_cmd_input.readline().decode("utf-8").replace('\r', '').replace('\n', '')
             except UnicodeDecodeError:
