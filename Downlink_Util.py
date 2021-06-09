@@ -151,6 +151,7 @@ def execute_downlink(ser_downlink, mission_folder_path):
                 else:
                     print(f"Received {ack}")
                     batch_num += 1
+                    timeout_count = 0
                 print()
                 time.sleep(mission_params.TIME_BETWEEN_PACKETS)
 
