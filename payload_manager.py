@@ -53,7 +53,7 @@ def main(use_camera, use_downlink):
         while True:
             print("Waiting for commands...")
             try:
-                read_command = ser_cmd_input.readline().decode("utf-8").replace("\n", "")
+                read_command = ser_cmd_input.readline().decode("utf-8")
             except UnicodeDecodeError:
                 print("\nUnicode Decode Error\n")
                 time.sleep(1)
