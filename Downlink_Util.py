@@ -3,8 +3,8 @@ import pprint
 import subprocess
 import time
 
+import Mission_Parameters as mission_params
 from CCSDS_Packet import CCSDS_Chunk_Packet, CCSDS_Control_Packet
-from Mission_Parameters import *
 
 
 # Given mission folder path, obtain list of images path
@@ -64,10 +64,10 @@ def prepare_tx_batch(enc_img_bytes):
         return batch_arr
 
     # Chop up bytes into chunks and prepare CCSDS packet
-    chunk_list = chop_bytes(enc_img_bytes, PRE_ENC_CHUNK_SIZE)
+    chunk_list = chop_bytes(enc_img_bytes, mission_params.PRE_ENC_CHUNK_SIZE)
 
     # Split chunks into batches
-    batch_list = split_batch(chunk_list, BATCH_SIZE)
+    batch_list = split_batch(chunk_list, mission_params.BATCH_SIZE)
 
     # Create CCSDS Packets
     packet_batch_list = []
@@ -80,7 +80,7 @@ def prepare_tx_batch(enc_img_bytes):
         for chunk in batch:
             # Create CCSDS Packet for each chunk
             packet = CCSDS_Chunk_Packet(
-                packet_seq_num, TELEMETRY_PACKET_TYPE_DOWNLINK_PACKET, batch_num+1, chunk_num, chunk)
+                packet_seq_num, mission_params.TELEMETRY_PACKET_TYPE_DOWNLINK_PACKET, batch_num+1, chunk_num, chunk)
             new_batch.append(packet)
             packet_seq_num += 1
             chunk_num += 1
@@ -111,9 +111,9 @@ def execute_downlink(ser_downlink, mission_folder_path):
 
         # Send CCSDS Start Packet
         start_packet = CCSDS_Control_Packet(
-            0, TELEMETRY_PACKET_TYPE_DOWNLINK_START, len(enc_img_bytes), len(batches))
+            0, mission_params.TELEMETRY_PACKET_TYPE_DOWNLINK_START, len(enc_img_bytes), len(batches))
         ser_downlink.write(start_packet.get_tx_packet())
-        time.sleep(TIME_SLEEP_AFTER_START)
+        time.sleep(mission_params.TIME_SLEEP_AFTER_START)
 
         # Start sending downlink packets
         is_resend = False
@@ -152,7 +152,7 @@ def execute_downlink(ser_downlink, mission_folder_path):
                     print(f"Received {ack}")
                     batch_num += 1
                 print()
-                time.sleep(TIME_BETWEEN_PACKETS)
+                time.sleep(mission_params.TIME_BETWEEN_PACKETS)
 
                 if is_resend:
                     is_resend = False
@@ -160,7 +160,7 @@ def execute_downlink(ser_downlink, mission_folder_path):
 
             else:
                 # Sleep first before sending start
-                time.sleep(TIME_BETWEEN_IMAGES_PAYLOAD)
+                time.sleep(mission_params.TIME_BETWEEN_IMAGES_PAYLOAD)
                 break
 
             if timeout_count > 5:
@@ -168,3 +168,4 @@ def execute_downlink(ser_downlink, mission_folder_path):
                 return
 
     print("done!")
+    print("\n\nWaiting for commands...")
