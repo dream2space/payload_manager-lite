@@ -9,7 +9,7 @@ class Command_Parser():
 
     def parse(self, read_command):
 
-        print(f"read command is {read_command}")
+        print(f"read command is {[ord(c) for c in read_command]}")
 
         # If empty command
         if len(read_command) == 0:
