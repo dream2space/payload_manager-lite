@@ -152,7 +152,7 @@ def execute_downlink(ser_downlink, mission_folder_path):
                     batch_num += 1
                     timeout_count = 0
                 print()
-                time.sleep(mission_params.TIME_BETWEEN_PACKETS * 2)
+                time.sleep(mission_params.TIME_BETWEEN_PACKETS)
 
                 if is_resend:
                     is_resend = False
