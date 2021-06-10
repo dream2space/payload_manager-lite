@@ -145,15 +145,14 @@ def execute_downlink(ser_downlink, mission_folder_path):
                     print("Nack or timeout")
                     is_resend = True
                     timeout_count += 1
-                    time.sleep(1)
-                    ser_downlink.flush()
+                    time.sleep(2)
 
                 else:
                     print(f"Received {ack}")
                     batch_num += 1
                     timeout_count = 0
                 print()
-                time.sleep(mission_params.TIME_BETWEEN_PACKETS)
+                time.sleep(mission_params.TIME_BETWEEN_PACKETS * 2)
 
                 if is_resend:
                     is_resend = False
